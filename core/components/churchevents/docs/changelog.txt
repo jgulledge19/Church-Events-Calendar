@@ -1,0 +1,44 @@
+Changelog for ChurchEvents.
+
+ChurchEvents 1.0 alpha 
+===============
+- Complete code rewrite and several new features.  DB structure has changed some but should upgrade.
+
+
+ChurchEvents 0.3 beta2
+===============
+- Minor fix for created URLs
+
+ChurchEvents 0.3 beta
+===============
+- Minor Windows bug fix for PHP 5.2.*
+- JS calendar now starts on Sunday.
+- Private events now show as Reserved for those not logged in
+- Allow to edit a single instance of a repeating event 
+- Added the makeUrl scheme option: http://rtfm.modx.com/display/revolution20/modX.makeUrl
+    ex: [[!churchevents? &scheme=`full` ]]
+
+
+ChurchEvents 0.2 beta2
+===============
+- Bug fixed for All day and none repeating events storing in the DB correctly.
+- Fixed repeating event error for months
+- Fixed request event bug
+
+ChurchEvents 0.2 beta1
+===============
+- Bug fixed for adding/editing categories
+- Added color picker for categories - note this needs some work though.
+- Added basic request option
+- Many minor bug fixes
+
+
+ChurchEvents 0.1 beta2
+===============
+- Added Caledars
+- Added Categories
+- Other Minor fixes
+
+ChurchEvents 0.1 beta1
+===============
+- Initial beta release

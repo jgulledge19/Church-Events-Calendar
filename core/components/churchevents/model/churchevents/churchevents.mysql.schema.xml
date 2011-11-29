@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="churchevents" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" version="1.1">
+	<object class="ChurchCalendar" table="church_calendar" extends="xPDOSimpleObject">
+		<composite alias="Event" class="ChurchEvents" local="id" foreign="church_calendar_id" cardinality="many" owner="local" />
+        <field key="title" dbtype="varchar" precision="128" phptype="string" null="false" default="" index="index" />
+		<field key="description" dbtype="mediumtext" phptype="string" null="false" />
+		<field key="request_notify" dbtype="mediumtext" phptype="string" null="false" />
+
+		<index alias="title" name="title" primary="false" unique="false" type="BTREE" >
+			<column key="title" length="" collation="A" null="false" />
+		</index>
+	</object>
+	<object class="ChurchEcategory" table="church_ecategory" extends="xPDOSimpleObject">
+		<composite alias="Event" class="ChurchEvents" local="id" foreign="church_ecategory_id" cardinality="many" owner="local" />
+        <field key="name" dbtype="varchar" precision="32" phptype="string" null="false" default="" index="index" />
+		<field key="background" dbtype="varchar" precision="6" phptype="string" null="false" default="" />
+		<field key="color" dbtype="varchar" precision="6" phptype="string" null="false" default="" />
+
+		<index alias="name" name="name" primary="false" unique="false" type="BTREE" >
+			<column key="name" length="" collation="A" null="false" />
+		</index>
+	</object>
+	<object class="ChurchEvents" table="church_events" extends="xPDOSimpleObject">
+		<composite alias="EventLocations" class="ChurchEventLocations" local="id" foreign="church_event_id" cardinality="many" owner="local" />
+		<aggregate alias="Calendar" class="ChurchCalendar" local="church_calendar_id" foreign="id" cardinality="one" owner="foreign" />
+        <aggregate alias="ECategory" class="ChurchEcategory" local="church_ecategory_id" foreign="id" cardinality="one" owner="foreign" />
+        
+        <field key="church_calendar_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" index="index" />
+		<field key="church_ecategory_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" index="index" />
+		<field key="parent_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" />
+		<field key="version" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" default="1" />
+		<field key="web_user_id" dbtype="int" precision="8" attributes="unsigned" phptype="integer" null="false" default="0" />
+		<field key="prominent" dbtype="set" precision="'Yes','No'" phptype="string" null="true" default="No" />
+		<field key="status" dbtype="set" precision="'approved','deleted','pending','submitted','rejected'" phptype="string" null="false" default="submitted" />
+		<field key="start_date" dbtype="datetime" phptype="datetime" null="false" index="index" />
+		<field key="end_date" dbtype="datetime" phptype="datetime" null="false" index="index" />
+		<field key="event_timed" dbtype="set" precision="'Y','N','allday'" phptype="string" null="false" default="Y" />
+		<field key="duration" dbtype="time" phptype="string" null="false" index="index" />
+		<field key="public_start" dbtype="datetime" phptype="datetime" null="false" index="index" />
+		<field key="public_end" dbtype="datetime" phptype="datetime" null="false" index="index" />
+		<field key="repeat_type" dbtype="set" precision="'none','daily','weekly','monthly'" phptype="string" null="true" default="none" />
+		<field key="interval" dbtype="tinyint" precision="3" attributes="unsigned" phptype="integer" null="false" default="0" />
+		<field key="days" dbtype="varchar" precision="128" phptype="string" null="false" default="" index="index" />
+		<field key="event_type" dbtype="set" precision="'public','private'" phptype="string" null="true" default="public" />
+		<field key="title" dbtype="varchar" precision="100" phptype="string" null="false" default="" index="index" />
+		<field key="public_desc" dbtype="text" phptype="string" null="true" />
+		<field key="notes" dbtype="text" phptype="string" null="true" />
+		<field key="office_notes" dbtype="text" phptype="string" null="true" />
+		<field key="contact" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="contact_email" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="contact_phone" dbtype="varchar" precision="32" phptype="string" null="false" default="" />
+		<field key="personal_subscribers" dbtype="text" phptype="string" null="true" />
+		<field key="location_name" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="address" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="city" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="state" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="zip" dbtype="varchar" precision="32" phptype="string" null="false" default="0" index="index" />
+		<field key="country" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+        <field key="extended" dbtype="text" phptype="string" null="true" />
+
+		<index alias="church_calendar_id" name="church_calendar_id" primary="false" unique="false" type="BTREE" >
+			<column key="church_calendar_id" length="" collation="A" null="false" />
+		</index>
+		<index alias="church_ecategory_id" name="church_ecategory_id" primary="false" unique="false" type="BTREE" >
+			<column key="church_ecategory_id" length="" collation="A" null="false" />
+		</index>
+		<index alias="start_date" name="start_date" primary="false" unique="false" type="BTREE" >
+			<column key="start_date" length="" collation="A" null="false" />
+		</index>
+		<index alias="end_date" name="end_date" primary="false" unique="false" type="BTREE" >
+			<column key="end_date" length="" collation="A" null="false" />
+		</index>
+		<index alias="duration" name="duration" primary="false" unique="false" type="BTREE" >
+			<column key="duration" length="" collation="A" null="false" />
+		</index>
+		<index alias="public_start" name="public_start" primary="false" unique="false" type="BTREE" >
+			<column key="public_start" length="" collation="A" null="false" />
+		</index>
+		<index alias="public_end" name="public_end" primary="false" unique="false" type="BTREE" >
+			<column key="public_end" length="" collation="A" null="false" />
+		</index>
+		<index alias="days" name="days" primary="false" unique="false" type="BTREE" >
+			<column key="days" length="" collation="A" null="false" />
+		</index>
+		<index alias="title" name="title" primary="false" unique="false" type="BTREE" >
+			<column key="title" length="" collation="A" null="false" />
+		</index>
+		<index alias="zip" name="zip" primary="false" unique="false" type="BTREE" >
+			<column key="zip" length="" collation="A" null="false" />
+		</index>
+	</object>
+    <object class="ChurchEventLocations" table="church_event_locations" extends="xPDOSimpleObject">
+        <aggregate alias="Event" class="ChurchEvnents" local="church_event_id" foreign="id" cardinality="one" owner="foreign" />
+        <aggregate alias="Location" class="ChurchLocations" local="church_location_id" foreign="id" cardinality="one" owner="foreign" />
+        
+        <field key="church_event_id" dbtype="int" precision="11" phptype="integer" null="false" index="index" />
+        <field key="church_location_id" dbtype="int" precision="11" phptype="integer" null="false" />
+        <field key="approved" dbtype="set" precision="'Yes','No'" phptype="string" null="true" default="Yes" />
+
+        <index alias="church_event_id" name="church_event_id" primary="false" unique="false" type="BTREE" >
+            <column key="church_event_id" length="" collation="A" null="false" />
+            <column key="church_location_id" length="" collation="A" null="false" />
+            <column key="approved" length="" collation="A" null="true" />
+        </index>
+    </object>
+    
+	<object class="ChurchLocationPermissions" table="church_location_permissions" extends="xPDOSimpleObject">
+		<composite alias="Location" class="ChurchLocations" local="church_location_id" foreign="id" cardinality="many" owner="local" />
+        
+        <field key="membergroup_names_id" dbtype="int" precision="11" phptype="integer" null="true" default="0" />
+		<field key="user_id" dbtype="int" precision="11" phptype="integer" null="true" default="0" />
+		<field key="church_location_id" dbtype="int" precision="11" phptype="integer" null="true" />
+		<field key="access" dbtype="int" precision="11" phptype="integer" null="true" default="0" />
+	</object>
+	
+	<object class="ChurchLocationType" table="church_location_type" extends="xPDOSimpleObject">
+		<aggregate alias="Locations" class="ChurchLocations" local="id" foreign="church_location_type_id" cardinality="many" owner="local" />
+        
+        <field key="name" dbtype="varchar" precision="100" phptype="string" null="true" />
+		<field key="notes" dbtype="text" phptype="string" null="true" />
+		<field key="owner" dbtype="int" precision="11" phptype="integer" null="true" />
+		<field key="public" dbtype="set" precision="'Yes','No'" phptype="string" null="true" default="Yes" />
+	</object>
+	
+	<object class="ChurchLocations" table="church_locations" extends="xPDOSimpleObject">
+		<aggregate alias="EventLocations" class="ChurchEventLocations" local="id" foreign="church_location_id" cardinality="many" owner="local" />
+        <aggregate alias="LocationPermissions" class="ChurchLocationPermissions" local="id" foreign="church_location_id" cardinality="many" owner="local" />
+        <composite alias="LocationType" class="ChurchLocationType" local="church_location_type_id" foreign="id" cardinality="many" owner="local" />
+        
+        <field key="church_location_type_id" dbtype="int" precision="11" phptype="integer" null="true" />
+		<field key="check_conflict" dbtype="set" precision="'Yes','No'" phptype="string" null="false" default="Yes" />
+		<field key="floor" dbtype="varchar" precision="32" phptype="string" null="true" />
+		<field key="name" dbtype="varchar" precision="128" phptype="string" null="false" default="" index="index" />
+		<field key="address" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="address2" dbtype="varchar" precision="128" phptype="string" null="true" default="" />
+		<field key="city" dbtype="varchar" precision="128" phptype="string" null="false" default="" />
+		<field key="state" dbtype="char" precision="2" phptype="string" null="false" default="IN" />
+		<field key="zip" dbtype="varchar" precision="32" phptype="string" null="false" default="" />
+		<field key="phone" dbtype="varchar" precision="64" phptype="string" null="false" default="" />
+		<field key="toll_free" dbtype="varchar" precision="64" phptype="string" null="true" />
+		<field key="fax" dbtype="varchar" precision="64" phptype="string" null="true" />
+		<field key="website" dbtype="varchar" precision="128" phptype="string" null="true" />
+		<field key="contact_name" dbtype="varchar" precision="128" phptype="string" null="true" />
+		<field key="contact_phone" dbtype="varchar" precision="64" phptype="string" null="true" />
+		<field key="contact_email" dbtype="varchar" precision="128" phptype="string" null="true" />
+		<field key="notes" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<field key="published" dbtype="set" precision="'Yes','No'" phptype="string" null="true" default="Yes" />
+		<field key="map_url" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<field key="owner" dbtype="int" precision="11" phptype="integer" null="true" />
+		<field key="owner_group" dbtype="varchar" precision="60" phptype="string" null="true" />
+
+		<index alias="location_name" name="location_name" primary="false" unique="false" type="BTREE" >
+			<column key="name" length="" collation="A" null="false" />
+		</index>
+	</object>
+</model>

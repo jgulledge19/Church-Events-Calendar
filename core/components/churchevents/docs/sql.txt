@@ -1,0 +1,11 @@
+Changes for events table for 1.0
+You need to run this query if you have installed a previous version.
+
+ALTER TABLE `modx`.`modx_church_events` 
+    DROP COLUMN `locations`,
+    ADD COLUMN `prominent` SET('Yes','No') DEFAULT 'No' NULL AFTER `web_user_id`,
+    ADD COLUMN `personal_subscribers` TEXT NULL AFTER `contact_phone`,
+    ADD COLUMN `extended` TEXT NULL AFTER `country`,
+    CHANGE `public_desc` `public_desc` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+    CHANGE `notes` `notes` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+    CHANGE `office_notes` `office_notes` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
