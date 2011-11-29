@@ -1,4 +1,18 @@
-Tables:
-modx_church_calendar, modx_church_ecategory, modx_church_location_permissions, modx_church_location_type, modx_church_locations
+What is Church Events Calendar?
+
+ChurchEvents is a calendar extra for MODx Revolution was initially designed specifically for churches
+ but would be useful in many other contexts.  Churchevents now supports templates and translations.
+
+Requirements
+    FormIt
+
+History
+
+ChurchEvents was written by Josh Gulledge to be a complete calendar for MODX Revolution, 
+first release was in early 2011.  In November 2011, ChurchEvents was rewretten to 
+meet MODX coding standards.
+
+
+Database Tables:
 church_calendar, church_ecategory, church_events, church_location_permissions, church_location_type, church_locations
 
