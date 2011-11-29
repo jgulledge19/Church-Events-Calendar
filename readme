@@ -1,0 +1,4 @@
+Tables:
+modx_church_calendar, modx_church_ecategory, modx_church_location_permissions, modx_church_location_type, modx_church_locations
+church_calendar, church_ecategory, church_events, church_location_permissions, church_location_type, church_locations
+
