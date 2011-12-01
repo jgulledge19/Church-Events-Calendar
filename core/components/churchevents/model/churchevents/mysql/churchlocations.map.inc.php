@@ -3,6 +3,36 @@ $xpdo_meta_map['ChurchLocations']= array (
   'package' => 'churchevents',
   'version' => '1.1',
   'table' => 'church_locations',
+  'aggregates' => 
+  array (
+    'EventLocations' => 
+    array (
+      'class' => 'ChurchEventLocations',
+      'local' => 'id',
+      'foreign' => 'church_location_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+    'LocationPermissions' => 
+    array (
+      'class' => 'ChurchLocationPermissions',
+      'local' => 'id',
+      'foreign' => 'church_location_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+  ),
+  'composites' => 
+  array (
+    'LocationType' => 
+    array (
+      'class' => 'ChurchLocationType',
+      'local' => 'church_location_type_id',
+      'foreign' => 'id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+  ),
   'fields' => 
   array (
     'church_location_type_id' => NULL,
@@ -22,7 +52,7 @@ $xpdo_meta_map['ChurchLocations']= array (
     'contact_phone' => NULL,
     'contact_email' => NULL,
     'notes' => NULL,
-    'published' => 0,
+    'published' => 'Yes',
     'map_url' => NULL,
     'owner' => NULL,
     'owner_group' => NULL,
@@ -38,8 +68,8 @@ $xpdo_meta_map['ChurchLocations']= array (
     ),
     'check_conflict' => 
     array (
-      'dbtype' => 'varchar',
-      'precision' => '3',
+      'dbtype' => 'set',
+      'precision' => '\'Yes\',\'No\'',
       'phptype' => 'string',
       'null' => false,
       'default' => 'Yes',
@@ -159,11 +189,11 @@ $xpdo_meta_map['ChurchLocations']= array (
     ),
     'published' => 
     array (
-      'dbtype' => 'tinyint',
-      'precision' => '4',
-      'phptype' => 'integer',
+      'dbtype' => 'set',
+      'precision' => '\'Yes\',\'No\'',
+      'phptype' => 'string',
       'null' => true,
-      'default' => 0,
+      'default' => 'Yes',
     ),
     'map_url' => 
     array (

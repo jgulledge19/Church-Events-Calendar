@@ -11,7 +11,7 @@
 
     [[+repeatOptions]]
 
-
+[[!tinymce]]
     <fieldset>
         <legend>[[+event_heading]]</legend>
         <ul class="plan">
@@ -37,7 +37,7 @@
             </li>
             <li class="full">
                 <label for="txt_public_desc" class="[[!+fi.error.public_desc:notempty=`formError`]]">[[+publicDesc_label]]</label>
-                <textarea name="public_desc" id="txt_public_desc" >[[!+fi.public_desc]]</textarea>
+                <textarea name="public_desc" id="txt_public_desc" class="mceEditor" >[[!+fi.public_desc]]</textarea>
             </li>
             <li class="full">
                 <label for="txt_notes" class="[[!+fi.error.notes:notempty=`formError`]]">[[+notes_label]]</label> 
@@ -84,20 +84,20 @@
                 <p class="small_font [[!+fi.error.repeat_type:notempty=`formError`]]" style="margin-top:0;padding-top:0;">[[+repeatType_heading]]</p>
                 <ul>
                     <li class="autoWidth spaceRight">
-                        <input name="repeat_type" type="radio" value="none" [[!+fi.repeat_type:FormItIsChecked=`none`]]  id="rd_repeat_type_none" class="radio" /> 
+                        <input name="repeat_type" type="radio" value="none" [[!+fi.repeat_type:FormItIsChecked=`none`]]  id="rd_repeat_type_none" class="radio changeToggle" /> 
                         <label for="rd_repeat_type_none">[[+repeatTypeNo_label]]</label>
                     </li>
                     <li class="autoWidth spaceRight">
-                        <input name="repeat_type" type="radio" value="daily" [[!+fi.repeat_type:FormItIsChecked=`daily`]] id="rd_repeat_type_daily" class="radio" /> 
+                        <input name="repeat_type" type="radio" value="daily" [[!+fi.repeat_type:FormItIsChecked=`daily`]] id="rd_repeat_type_daily" class="radio changeToggle" /> 
                         <label for="rd_repeat_type_daily">[[+repeatTypeDaily_label]]</label>
                     </li>
                     <li class="autoWidth spaceRight">
-                        <input name="repeat_type" type="radio" value="weekly" [[!+fi.repeat_type:FormItIsChecked=`weekly`]] id="rd_repeat_type_weekly" class="radio" /> 
+                        <input name="repeat_type" type="radio" value="weekly" [[!+fi.repeat_type:FormItIsChecked=`weekly`]] id="rd_repeat_type_weekly" class="radio changeToggle" /> 
                         <label for="rd_repeat_type_weekly">[[+repeatTypeWeekly_label]]</label>
                     </li>
 
                     <li class="autoWidth spaceRight">
-                        <input name="repeat_type" type="radio" value="monthly" [[!+fi.repeat_type:FormItIsChecked=`monthly`]] id="rd_repeat_type_monthly" class="radio" /> 
+                        <input name="repeat_type" type="radio" value="monthly" [[!+fi.repeat_type:FormItIsChecked=`monthly`]] id="rd_repeat_type_monthly" class="radio changeToggle" /> 
                         <label for="rd_repeat_type_monthly">[[+repeatTypeMonthly_label]]</label>
                     </li>
                     
@@ -109,13 +109,14 @@
                 <div id="daily_repeat" style="margin-left: 25px;">
                     <label for="sel_day_interval" class="[[!+fi.error.day_interval:notempty=`formError`]]">[[+interval_label]]</label> 
                     <select name="day_interval" id="sel_day_interval" >
-                        <option value="1" >Every day</option>
-                        <option value="2" >Every other day</option>
-                        <option value="3" >Every third day</option>
-                        <option value="4" >Every forth day</option>
-                        <option value="5" >Every fifth day</option>
-                        <option value="6" >Every sixth day</option>
-                        <option value="7" >Every seventh day</option>
+                        <option value="1" >[[+repeatTypeDaily_option]]</option>
+                        <option value="2" >[[+repeatTypeDailyOther_option]]</option>
+                        <option value="3" >[[+repeatTypeDaily3_option]]</option>
+                        <option value="4" >[[+repeatTypeDaily4_option]]</option>
+                        <option value="5" >[[+repeatTypeDaily5_option]]</option>
+                        <option value="6" >[[+repeatTypeDaily6_option]]</option>
+                        <option value="7" >[[+repeatTypeDaily7_option]]</option>
+                        
                     </select>
                 </div>
             </li>
@@ -126,43 +127,43 @@
                     <label for="sel_interval" class="[[!+fi.error.week_interval:notempty=`formError`]]">[[+interval_label]]</label> 
                             
                     <select name="week_interval" id="sel_interval" >
-                        <option value="1">Every week</option>
-                        <option value="2">Every other week</option>
-                        <option value="3">Every third week</option>
-                        <option value="4">Every forth week</option>
-                        <option value="5">Every fifth week</option>
-                        <option value="6">Every sixth week</option>
+                        <option value="1">[[+repeatTypeWeekly_option]]</option>
+                        <option value="2">[[+repeatTypeWeeklyOther_option]]</option>
+                        <option value="3">[[+repeatTypeWeekly3_option]]</option>
+                        <option value="4">[[+repeatTypeWeekly4_option]]</option>
+                        <option value="5">[[+repeatTypeWeekly5_option]]</option>
+                        <option value="6">[[+repeatTypeWeekly6_option]]</option>
                     </select>
 
                     <p class="small_font" class="[[!+fi.error.ch_days:notempty=`formError`]]">[[+whichDays_heading]]</p>
                     <table class="table_select">
                         <tr>
                         <td>
-                            <input name="days_7" type="checkbox" value="Y" id="ck_days_7" class="radio"  />
+                            <input name="days_7" type="checkbox" value="Y" [[!+fi.days_7:FormItIsChecked=`Y`]] id="ck_days_7" class="radio"  />
                             <label for="ck_days_7">[[+sunday]]</label>
                         </td>
                         <td>
-                            <input name="days_1" type="checkbox" value="Y" id="ck_days_1" class="radio"  />
+                            <input name="days_1" type="checkbox" value="Y" [[!+fi.days_1:FormItIsChecked=`Y`]] id="ck_days_1" class="radio"  />
                             <label for="ck_days_1">[[+monday]]</label>
                         </td>
                         <td>
-                            <input name="days_2" type="checkbox" value="Y" id="ck_days_2" class="radio"  />
+                            <input name="days_2" type="checkbox" value="Y" [[!+fi.days_2:FormItIsChecked=`Y`]] id="ck_days_2" class="radio"  />
                             <label for="ck_days_2">[[+tuesday]]</label>
                         </td>
                         <td>
-                            <input name="days_3" type="checkbox" value="Y" id="ck_days_3" class="radio"  />
+                            <input name="days_3" type="checkbox" value="Y" [[!+fi.days_3:FormItIsChecked=`Y`]] id="ck_days_3" class="radio"  />
                             <label for="ck_days_3">[[+wednesday]]</label>
                         </td>
                         <td>
-                            <input name="days_4" type="checkbox" value="Y" id="ck_days_4" class="radio"  />
+                            <input name="days_4" type="checkbox" value="Y" [[!+fi.days_4:FormItIsChecked=`Y`]] id="ck_days_4" class="radio"  />
                             <label for="ck_days_4">[[+thursday]]</label>
                         </td>
                         <td>
-                            <input name="days_5" type="checkbox" value="Y" id="ck_days_5" class="radio"  />
+                            <input name="days_5" type="checkbox" value="Y" [[!+fi.days_5:FormItIsChecked=`Y`]] id="ck_days_5" class="radio"  />
                             <label for="ck_days_5">[[+friday]]</label>
                         </td>
                         <td>
-                            <input name="days_6" type="checkbox" value="Y" id="ck_days_6" class="radio"  />
+                            <input name="days_6" type="checkbox" value="Y" [[!+fi.days_6:FormItIsChecked=`Y`]] id="ck_days_6" class="radio"  />
                             <label for="ck_days_6">[[+saturday]]</label>
                         </td>
                     </tr>
@@ -177,16 +178,14 @@
                     <label for="sel_mon_interval">[[+interval_label]]</label> 
                             
                 <select name="month_interval" id="sel_mon_interval" > 
-                    <option value="1">Every month</option>
-                    <option value="2">Every other month</option>
-                    <option value="3">Every third month</option>
-                    <option value="4">Every forth month</option>
-                    <option value="5">Every fifth month</option>
-                    <option value="6">Every sixth month</option>
+                    <option value="1">[[+repeatTypeMonthly_option]]</option>
+                    <option value="2">[[+repeatTypeMonthlyOther_option]]</option>
+                    <option value="3">[[+repeatTypeMonthly3_option]]</option>
+                    <option value="4">[[+repeatTypeMonthly4_option]]</option>
+                    <option value="5">[[+repeatTypeMonthly5_option]]</option>
+                    <option value="6">[[+repeatTypeMonthly6_option]]</option>
                 </select>
-
-                            
-                    <p class="small_font">When days of the month should the event be on?</p>
+                    <p class="small_font">[[+whichMonthDays_heading]]</p>
                     <table class="table_select tGrid">
                         <tr>
                             <th>&nbsp;</th>
@@ -324,13 +323,19 @@
                 </div>
             </li>
             <li>
-                <label for="txt_5" class="displayBlock [[!+fi.error.public_start:notempty=`formError`]]">[[+publicStart_label]]</label>
+                <label for="txt_public_start" class="displayBlock [[!+fi.error.public_start:notempty=`formError`]]">[[+publicStart_label]]</label>
                 <input name="public_start" type="text" value="[[+fi.public_start]]" title="ex: 10/21/2011" class="date"  id="txt_public_start" />
             </li>
             <li>
-                <div id="li_end_date">
-                    <label for="txt_6"  class="displayBlock">[[+publicEnd_label]]</label>
+                <div class="repeat_info">
+                    <label for="txt_public_end"  class="displayBlock">[[+publicEnd_label]]</label>
                     <input name="public_end" type="text" value="[[+fi.public_end]]" title="ex: 10/21/2011" class="date"  id="txt_public_end"  />
+                </div>
+            </li>
+            <li class="full">
+                <div class="repeat_info">
+                    <label for="txt_exceptions"  class="displayBlock">[[+exceptions_label]]</label>
+                    <input type="text" name="exceptions" title="ex: 10/21/2011,10/222011"  class="full" id="txt_exceptions" value="[[+fi.exceptions]]"/>
                 </div>
             </li>
             <li class="full clear">

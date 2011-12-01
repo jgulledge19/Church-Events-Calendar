@@ -1,5 +1,17 @@
 Changelog for ChurchEvents.
 
+ChurchEvents 1.0 alpha4 
+===============
+- added COLUMN exceptions to church_events db table for repeating events that need one or more exceptions
+- added extend feature
+- switched to jQuery from Mootools for the add/edit form page
+- added TinyMCE editor to Public Description on add/edit form.  
+    Note you will have to add in a snippet for this feature to work.
+    See: http://forums.modx.com/thread/72206/tinymce-addon-and-using-it-with-forms#dis-post-401943
+- More Lexicon options
+- Many small bug fixes
+
+
 ChurchEvents 1.0 alpha 
 ===============
 - Complete code rewrite and several new features.  DB structure has changed some but should upgrade.

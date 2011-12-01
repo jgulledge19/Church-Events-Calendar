@@ -97,3 +97,18 @@ How to Install:
          Description: Use the location manager.  If yes events will choose from a list of locations and events can check for conflicts.  If no then each event can have a typed in a location and no event is checked for conflict.
 5. Then run the install snippet: [[installChurchEvents]]
             
+Extending - adding more fields to the event
+1. Simply add another field on the form and the name has to start with extend_.  So an example is you want to 
+    have audio & video checkbox.  Just add the form element like so: <input type="checkbox" name="extend_audio_video" value="Yes">
+    Now you will be able to call on that as a property [[+extend_audio_video]] in the event description.
+2. Validation - TBD
+
+Example put this on the _eventformtpl chunk
+    <li class="full">
+        <input type="checkbox" name="extend_audio" value="Yes" [[!+fi.extend_audio:FormItIsChecked=`Yes`]] id="rd_extend_audio" class="radio" /> 
+        <label for="rd_extend_audio">Audio/Video</label>
+    </li>
+    <li class="full">
+        <input type="checkbox" name="extend_food" value="Yes" [[!+fi.extend_food:FormItIsChecked=`Yes`]] id="rd_extend_food" class="radio" /> 
+        <label for="rd_extend_food">Food</label>
+    </li>

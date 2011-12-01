@@ -3,12 +3,23 @@ $xpdo_meta_map['ChurchLocationType']= array (
   'package' => 'churchevents',
   'version' => '1.1',
   'table' => 'church_location_type',
+  'aggregates' => 
+  array (
+    'Locations' => 
+    array (
+      'class' => 'ChurchLocations',
+      'local' => 'id',
+      'foreign' => 'church_location_type_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+  ),
   'fields' => 
   array (
     'name' => NULL,
     'notes' => NULL,
     'owner' => NULL,
-    'public' => 'Y',
+    'public' => 'Yes',
   ),
   'fieldMeta' => 
   array (
@@ -35,10 +46,10 @@ $xpdo_meta_map['ChurchLocationType']= array (
     'public' => 
     array (
       'dbtype' => 'set',
-      'precision' => '\'Y\',\'N\'',
+      'precision' => '\'Yes\',\'No\'',
       'phptype' => 'string',
       'null' => true,
-      'default' => 'Y',
+      'default' => 'Yes',
     ),
   ),
 );

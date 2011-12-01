@@ -238,7 +238,7 @@ class Calendar {
                         'hooks' => 'saveChurchEvent',//
                         'validate' => 'public_start:required:isDate=^'.$this->getFilter('dateFormat').'^,repeat_type:required,
                                        calendar_id:required:isNumber,category_id:required:isNumber,status:required,
-                                       event_type:required,title:required,public_desc:required,
+                                       event_type:required,title:required,public_desc:required:allowTags,notes:allowTags,
                                        contact:required,contact_email:email:required',
                     );
                     $scriptProperties = array_merge($myProperties, $scriptProperties);
@@ -279,6 +279,9 @@ class Calendar {
                     //$grid = new $className($this);//,$this->config);
                     $event = new ManageEvent($this->modx, $this);//,$this->config);
                     // need to make the array
+                    unset($scriptProperties['validate']);
+                    unset($scriptProperties['preHooks']);
+                    unset($scriptProperties['hooks']);
                     $myProperties = array(
                         'preHooks' => 'loadDefaults',
                         'hooks' => 'deleteChurchEvent',//
@@ -337,10 +340,10 @@ class Calendar {
         // 2. do they have permissions? 
         $this->filters['event_id'] = $this->getUserValue('event_id', 0, true);
         
-        $this->filters['month'] = $this->getUserValue('month', date("n"), true);
-        $this->filters['day'] = $this->getUserValue('day', date("j"), true);
-        $this->filters['week'] = $this->getUserValue('day', date("W"), true);
-        $this->filters['year'] = $this->getUserValue('year', date("Y"), true);
+        $this->filters['month'] = $this->getUserValue('month', date("n"), true, true);
+        $this->filters['day'] = $this->getUserValue('day', date("j"), true, true);
+        $this->filters['week'] = $this->getUserValue('day', date("W"), true, true);
+        $this->filters['year'] = $this->getUserValue('year', date("Y"), true, true);
         
         $this->filters['a'] = $this->getUserValue('a', 0);
         $this->filters['page_id'] = $this->getUserValue('id', 0);
@@ -941,7 +944,8 @@ ORDER BY ce.start_date ASC
                 $properties['title'] = $this->modx->lexicon('churchevents.reserved');
             } else {
                 // do I need to do anything? yes extended to data 
-                
+                $tmp = $this->getExtended($properties['extended']);
+                $properties = array_merge($properties,(array)$tmp );
             }
             // get location info
             if ( $this->getFilter('useLocations') ) {
@@ -1163,6 +1167,65 @@ ORDER BY ce.start_date ASC
         return $properties;
     }
     /**
+     * Utility function put exceptions string data into an array
+     * @param string $exceptions
+     * @return array() $array
+     */
+    public function getExceptions($dates){
+        $data = explode(',',$dates);
+        $array = array();
+        if ( !empty($data) ) {
+            foreach( $data as $date ) {
+                $array[] = date('Y-m-d', strtotime($date));
+            }
+            return $array;
+        }
+        return array();
+    }
+    /**
+     * Utility function take an array and make the exceptions string
+     * @param array $dates
+     * @return string $exceptions
+     */
+    public function makeExceptions($dates){
+        $expections = NULL;
+        foreach( $dates as $date ) {
+            if ( !empty( $expections)) {
+                $expections .= ',';
+            }
+            $expections .= $date;//date('Y-m-d', strtotime($date));
+        }
+        return $expections;
+    }
+    /**
+     * Utility function put extend string data into an array
+     * @param string $extended
+     * @return array() $array
+     */
+    public function getExtended($extend){
+        $data = json_decode($extend);
+        if ( !empty($data) ) {
+            return (array)$data;
+        }
+        return array();
+    }
+    /**
+     * Utility function take an array and make the extend string
+     * @param array $data
+     * @return string $extended
+     */
+    public function makeExtended($data){
+        $extend_array = array();
+        foreach( $data as $name => $value ) {
+            if (strpos($name, 'extend_') === false ) {
+                continue; // do nothing
+            } else {
+                $extend_array[$name] = $value;
+            }
+        }
+        return json_encode($extend_array);
+    }
+    /**
      * Utility function to check for conflicts to the current event locations
      * @param $event this is an instance of a ChurchEvents object
      * @param array() $eventLocations a numeric array of the location ids
@@ -1180,6 +1243,12 @@ ORDER BY ce.start_date ASC
         //$query->select($this->modx->getSelectColumns('ChurchEvents','ChurchEvents','',array('DISTINCT `ChurchEvents`.`id` AS `ChurchEvents_id`', 'ChurchEvents.*')));// http://rtfm.modx.com/display/xPDO20/xPDOQuery.select
         //$query->select('DISTINCT `ChurchEvents`.`id` AS `ChurchEvents_id`,'.$this->modx->getSelectColumns('ChurchEvents','ChurchEvents') );// http://rtfm.modx.com/display/xPDO20/xPDOQuery.select
         $query->innerJoin('ChurchEventLocations','EventLocations');
+        $exclude = array();
+        $exclude[] = $event->get('id');
+        $parent_id = $event->get('parent_id'); 
+        if ( !empty($parent_id) ) {
+            $exclude[] = $parent_id;
+        }
         $query->where(array(
                 array(
                     // all day
@@ -1200,7 +1269,11 @@ ORDER BY ce.start_date ASC
                 ),
             // status = approved?
             'EventLocations.church_location_id:IN' => $eventLocations,
-            'ChurchEvents.id:!=' => $event->get('id'),
+            array(
+                'ChurchEvents.id:!=' => $event->get('id'),
+                'AND:ChurchEvents.parent_id:NOT IN' => $exclude
+            )
+            
                 
         ));
         $query->prepare();
@@ -1349,11 +1422,19 @@ ORDER BY ce.start_date ASC
             //'churchevents._label'] = '';
             'churchevents.dateTime_heading','churchevents.repeatType_heading','churchevents.repeatTypeNo_label','churchevents.repeatTypeDaily_label',
             'churchevents.repeatTypeWeekly_label','churchevents.repeatTypeMonthly_label','churchevents.interval_label',
+            'churchevents.repeatTypeDaily_option','churchevents.repeatTypeDailyOther_option', 'churchevents.repeatTypeDaily3_option', 'churchevents.repeatTypeDaily4_option',
+            'churchevents.repeatTypeDaily5_option','churchevents.repeatTypeDaily6_option','churchevents.repeatTypeDaily7_option',
+            'churchevents.repeatTypeWeekly_option','churchevents.repeatTypeWeeklyOther_option','churchevents.repeatTypeWeekly3_option',
+            'churchevents.repeatTypeWeekly4_option','churchevents.repeatTypeWeekly5_option','churchevents.repeatTypeWeekly6_option',
+            'churchevents.repeatTypeWeekly7_option','churchevents.repeatTypeMonthly_option','churchevents.repeatTypeMonthlyOther_option',
+            'churchevents.repeatTypeMonthly3_option','churchevents.repeatTypeMonthly4_option','churchevents.repeatTypeMonthly5_option',
+            'churchevents.repeatTypeMonthly6_option','churchevents.repeatTypeMonthly7_option',
+            
             'churchevents.whichDays_heading','churchevents.whichMonthDays_heading','churchevents.firstWeek_heading','churchevents.secondWeek_heading',
             'churchevents.thirdWeek_heading','churchevents.forthWeek_heading','churchevents.fifthWeek_heading','churchevents.publicStart_label',
             'churchevents.publicEnd_label','churchevents.eventTimed_heading','churchevents.eventTimedYes_label','churchevents.publicTime_label',
             'churchevents.duration_label','churchevents.setupTime_label','churchevents.eventTimedAllday_label',
-            'churchevents.eventTimedNote_label',
+            'churchevents.eventTimedNote_label','churchevents.exceptions_label',
             // locations
             'churchevents.location_heading',
             

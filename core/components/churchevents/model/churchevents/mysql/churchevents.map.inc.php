@@ -3,6 +3,17 @@ $xpdo_meta_map['ChurchEvents']= array (
   'package' => 'churchevents',
   'version' => '1.1',
   'table' => 'church_events',
+  'composites' => 
+  array (
+    'EventLocations' => 
+    array (
+      'class' => 'ChurchEventLocations',
+      'local' => 'id',
+      'foreign' => 'church_event_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+  ),
   'aggregates' => 
   array (
     'Calendar' => 
@@ -29,6 +40,7 @@ $xpdo_meta_map['ChurchEvents']= array (
     'parent_id' => 0,
     'version' => 1,
     'web_user_id' => 0,
+    'prominent' => 'No',
     'status' => 'submitted',
     'start_date' => NULL,
     'end_date' => NULL,
@@ -38,6 +50,7 @@ $xpdo_meta_map['ChurchEvents']= array (
     'public_end' => NULL,
     'repeat_type' => 'none',
     'interval' => 0,
+    'exceptions' => NULL,
     'days' => '',
     'event_type' => 'public',
     'title' => '',
@@ -48,7 +61,6 @@ $xpdo_meta_map['ChurchEvents']= array (
     'contact_email' => '',
     'contact_phone' => '',
     'personal_subscribers' => NULL,
-    'locations' => NULL,
     'location_name' => '',
     'address' => '',
     'city' => '',
@@ -105,6 +117,14 @@ $xpdo_meta_map['ChurchEvents']= array (
       'phptype' => 'integer',
       'null' => false,
       'default' => 0,
+    ),
+    'prominent' => 
+    array (
+      'dbtype' => 'set',
+      'precision' => '\'Yes\',\'No\'',
+      'phptype' => 'string',
+      'null' => true,
+      'default' => 'No',
     ),
     'status' => 
     array (
@@ -174,6 +194,12 @@ $xpdo_meta_map['ChurchEvents']= array (
       'null' => false,
       'default' => 0,
     ),
+    'exceptions' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'string',
+      'null' => true,
+    ),
     'days' => 
     array (
       'dbtype' => 'varchar',
@@ -204,19 +230,19 @@ $xpdo_meta_map['ChurchEvents']= array (
     array (
       'dbtype' => 'text',
       'phptype' => 'string',
-      'null' => false,
+      'null' => true,
     ),
     'notes' => 
     array (
       'dbtype' => 'text',
       'phptype' => 'string',
-      'null' => false,
+      'null' => true,
     ),
     'office_notes' => 
     array (
       'dbtype' => 'text',
       'phptype' => 'string',
-      'null' => false,
+      'null' => true,
     ),
     'contact' => 
     array (
@@ -246,13 +272,7 @@ $xpdo_meta_map['ChurchEvents']= array (
     array (
       'dbtype' => 'text',
       'phptype' => 'string',
-      'null' => false,
-    ),
-    'locations' => 
-    array (
-      'dbtype' => 'text',
-      'phptype' => 'string',
-      'null' => false,
+      'null' => true,
     ),
     'location_name' => 
     array (

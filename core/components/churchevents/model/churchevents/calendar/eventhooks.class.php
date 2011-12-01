@@ -108,6 +108,8 @@ class eventHooks extends fiHooks{
                 $eventLocations[] = $location->get('church_location_id');
             }
             // extended fields
+            $tmp = $this->Calendar->getExtended($this->default_data['extended']);
+            $this->default_data = array_merge((array)$this->default_data, (array)$tmp);
         } else {
             // set the default calendar and category of the current filter
             $this->default_data['church_calendar_id'] = $this->Calendar->getFilter('church_calendar_id');
@@ -115,6 +117,9 @@ class eventHooks extends fiHooks{
             $this->default_data['event_id'] = 0;
             
             $this->default_data['public_time'] = NULL;
+            if ( isset($_GET['start_date']) ) {
+                $this->default_data['public_start'] = $_GET['start_date']; 
+            }
         }
         // Admin stuff
         
@@ -299,6 +304,8 @@ class eventHooks extends fiHooks{
         } else {
             $event = $this->modx->newObject('ChurchEvents');
         }
+        // extended data
+        $input_data['extended'] = $this->Calendar->makeExtended($this->fields);
         $event->fromArray($input_data,'',true);
         
         // debug:
@@ -384,10 +391,14 @@ class eventHooks extends fiHooks{
                 $count = 0;
                 $eventList = array();
                 $conflictHtml = NULL;
+                $exceptions = $this->Calendar->getExceptions($this->fields['exceptions']);
                 foreach( $repeats as $n => $date ){
-                    //echo '<br>ST: '.$start_date.' - Date: '.$date;
+                    //echo '<br>Date: '.$date;
                     if ( $date == $start_date ) {
                         //continue;// this is the parent time already saved
+                    }
+                    if ( in_array($date,$exceptions) ) {
+                        continue;
                     }
                     $input_data['public_start'] = $date.' '.$input_data['public_time'];
                     if ( $input_data['setup_time'] != '00:00:00'  ) {// setup_time

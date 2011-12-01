@@ -9,3 +9,5 @@ ALTER TABLE `modx`.`modx_church_events`
     CHANGE `public_desc` `public_desc` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
     CHANGE `notes` `notes` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
     CHANGE `office_notes` `office_notes` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+    
+ALTER TABLE `modx`.`modx_church_events`     ADD COLUMN `exceptions` TEXT NULL AFTER `days`;

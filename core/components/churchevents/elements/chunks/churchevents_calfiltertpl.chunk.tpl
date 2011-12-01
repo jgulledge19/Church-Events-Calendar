@@ -22,8 +22,7 @@
         </ul>
 
     </fieldset>
-<!-- must have this for search to work -- >
-    <input name="a" type="hidden" value="[[+a]]"  />
-    <input name="id" type="hidden" value="[[*id]]"  />
--->
+<!-- must have this for search to work for pages with out furl -->
+    <input name="id" type="hidden" value="[[*id]]" />
+
 </form>

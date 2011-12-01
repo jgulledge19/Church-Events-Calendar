@@ -1,4 +1,4 @@
-<form name="sort_form" action="" method="get"  class="standard" >
+<form name="sort_form" action="[[~[[*id]]]]" method="get"  class="standard" >
 	<fieldset class="clear">
 		<legend>Sort the Calendars</legend>
 		<ul class="plan">
