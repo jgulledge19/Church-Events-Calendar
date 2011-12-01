@@ -20,7 +20,7 @@ Usage:
 Features:
     - Multiple calendar views
     - Global categories, you can choose colors to identify each category
-    - Repeating events, daily, weekly, monthly and about any combination of those.
+    - Repeating events, daily, weekly, monthly and about any combination of those and you can select exceptions.
     - Allow events to be requested and can edit/delete a single instance of an event
     - Private/Public events
     - Grid & List views
@@ -29,12 +29,12 @@ Features:
     - Several more before a 1.0 pl
     
 Developers Info:
-    The default theme/skin of ChurchEvents uses the mootools JavaScript Library: http://mootools.net and 
-    the mootools date picker: http://mootools.net/forge/p/mootools_datepicker.  I will be switching to jQuery
-    as the default before 1.0pl release. See old documentation at: 
+    1.0 Alpha4 and now use jQuery older versions used the mootools JavaScript Library: http://mootools.net and 
+    the mootools date picker: http://mootools.net/forge/p/mootools_datepicker.  See old documentation at: 
     http://www.joshua19media.com/modx-development/church-events-docs.html much if it is still relevant, I 
     will be updating docs before a release canidate.  
 
+More Docs: http://rtfm.modx.com/display/ADDON/Church+Events+Calendar
 
 How to Install:
 1. Install via the MODX Revolution package managment
@@ -96,7 +96,10 @@ How to Install:
          Value: Yes
          Description: Use the location manager.  If yes events will choose from a list of locations and events can check for conflicts.  If no then each event can have a typed in a location and no event is checked for conflict.
 5. Then run the install snippet: [[installChurchEvents]]
-            
+6. Add TinyMCE editor to Public Description on add/edit form.  
+    Note you will have to add in a snippet for this feature to work.
+    See: http://forums.modx.com/thread/72206/tinymce-addon-and-using-it-with-forms#dis-post-401943
+
 Extending - adding more fields to the event
 1. Simply add another field on the form and the name has to start with extend_.  So an example is you want to 
     have audio & video checkbox.  Just add the form element like so: <input type="checkbox" name="extend_audio_video" value="Yes">
