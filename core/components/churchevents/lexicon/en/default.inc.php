@@ -96,6 +96,7 @@ $_lang['churchevents.location_err_ns'] = 'Location not specified.';
 $_lang['churchevents.location_err_ns_name'] = 'Please specify a name for the location.';
 $_lang['churchevents.location_err_remove'] = 'An error occurred while trying to remove the location.';
 $_lang['churchevents.location_err_save'] = 'An error occurred while trying to save.';
+$_lang['churchevents.location_type_select'] = 'Select a Building/Location Type';
 
 
 // location type
@@ -267,4 +268,13 @@ $_lang['churchevents._label'] = '';
 $_lang['churchevents._label'] = '';
 $_lang['churchevents._label'] = '';
 */
-
+$_lang['setting_churchevents.allowRequests'] = 'Allow Requests';
+$_lang['setting_churchevents.allowRequests_desc'] = 'Allow guests to request events.';
+$_lang['setting_churchevents.dateFormat'] = 'Date Format';
+$_lang['setting_churchevents.dateFormat_desc'] = 'This is the format that will appear on forms and when a date is presented. Default is %m/%d/%Y see php.net/strftime for all options.';
+$_lang['setting_churchevents.extended'] = 'Extended Fields';
+$_lang['setting_churchevents.extended_desc'] = 'A comma separated list of fields you want on the event form.  Example: extend_numberOfPeople,extend_needCatering.';
+$_lang['setting_churchevents.pageID'] = 'Page/Resource ID';
+$_lang['setting_churchevents.pageID_desc'] = 'This is the Page/Resource ID where the calendar will be located.  This is what all generated URLs are based on.';
+$_lang['setting_churchevents.useLocations'] = 'Use Locations';
+$_lang['setting_churchevents.useLocations_desc'] = 'Use the location manager.  If yes events will choose from a list of locations and events can check for conflicts.  If no then each event can have a typed in a location and no event is checked for conflict.';

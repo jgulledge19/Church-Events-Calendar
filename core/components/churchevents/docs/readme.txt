@@ -13,7 +13,7 @@ Usage:
     To use the calendar grid view call on the snippet like: [[!churchEventsCalendar? ]] 
     in a chunk or resource/page.  Or just create a new resource and select the ChurchEvents template.
     You must be logged into the manager to manage events, calendars and categories.
-    Requires FormIt Package, optional ColorPicker: http://modx.com/extras/package/colorpicker 
+    Requires FormIt Package and ColorPicker Package: http://modx.com/extras/package/colorpicker 
     Calendars, Categories and Locations are now managed via the backend manager.  
     Add/Edit/Delete/Request Events is still done via the calendar grid.
 
@@ -37,7 +37,7 @@ Developers Info:
 More Docs: http://rtfm.modx.com/display/ADDON/Church+Events+Calendar
 
 How to Install:
-1. Install via the MODX Revolution package managment
+1. Install via the MODX Revolution package managment, FormIt and ColorPicker packages are required before install.
 2. Add TinyMCE editor to Public Description on add/edit form.  
     Note you will have to add in a snippet for this feature to work.
     See: http://forums.modx.com/thread/72206/tinymce-addon-and-using-it-with-forms#dis-post-401943

@@ -43,10 +43,12 @@ $modx =& $object->xpdo;
 $modx->log(xPDO::LOG_LEVEL_INFO,'Running PHP Validator.');
 switch($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
+   /* These cases must return true or the upgrade/uninstall will be cancelled */
+   case xPDOTransport::ACTION_UPGRADE:
 
         $modx->log(xPDO::LOG_LEVEL_INFO,'Checking for installed getResources snippet ');
         $success = true;
-        /* Check for getResources */
+        /* Check for FormIt */
         $gr = $modx->getObject('modSnippet',array('name'=>'FormIt'));
         if ($gr) {
             $modx->log(xPDO::LOG_LEVEL_INFO,'FormIt found - install will continue');
@@ -55,11 +57,15 @@ switch($options[xPDOTransport::PACKAGE_ACTION]) {
             $modx->log(xPDO::LOG_LEVEL_ERROR,'This package requires the FormIt package. Please install it and reinstall Church Events Calendar');
             $success = false;
         }
-        
+        /* Check for ColorPicker */
+        if ( file_exists(MODX_ASSETS_PATH.'components/colorpicker/js/colorpickerfield.js') ) {
+            $modx->log(xPDO::LOG_LEVEL_INFO,'ColorPicker found - install will continue');
+        } else {
+            $modx->log(xPDO::LOG_LEVEL_ERROR,'This package requires the ColorPicker package. Please install it and reinstall Church Events Calendar');
+            $success = false;
+        }
 
         break;
-   /* These cases must return true or the upgrade/uninstall will be cancelled */
-   case xPDOTransport::ACTION_UPGRADE:
         $success = true;
         break;
 

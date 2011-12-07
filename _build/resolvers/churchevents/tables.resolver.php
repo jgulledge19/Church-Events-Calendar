@@ -158,6 +158,7 @@ if ($object->xpdo) {
                 'floor' => 'Lower Level',
                 'address' => '100 Street',
                 'notes' => 'This can be a room or it could be a place.',
+                'church_location_type_id' => $locationType->get('id')
                 ));
             if ($location->save() == false) {
                 // LOG_LEVEL_ERROR

@@ -442,7 +442,7 @@ Cmp.combo.LocationType = function(config) {
         ,typeAhead:true
         ,minChars: 1
         ,pageSize: 20
-        ,emptyText: _('churchevents.location_select_type')
+        ,emptyText: _('churchevents.location_type_select')
         ,forceSelection: true
     });
     Cmp.combo.LocationType.superclass.constructor.call(this,config);
@@ -470,7 +470,7 @@ Cmp.combo.LocationTypeFilter = function(config) {
         ,typeAhead:true
         ,minChars: 1
         ,pageSize: 20
-        ,emptyText: _('churchevents.location_select_type')
+        ,emptyText: _('churchevents.location_type_select')
         ,forceSelection: true
         
     });
@@ -1133,7 +1133,7 @@ Ext.extend(Cmp.grid.LocationType,MODx.grid.Grid,{
     }
     ,getMenu: function() {
         var m = [{
-            text: _('churchevents.loction_type_update')
+            text: _('churchevents.location_type_update')
             ,handler: this.updateLocationType
         },'-',{
             text: _('churchevents.location_type_remove')
