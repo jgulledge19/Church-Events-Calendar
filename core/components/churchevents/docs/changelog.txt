@@ -1,5 +1,10 @@
 Changelog for ChurchEvents.
 
+ChurchEvents 1.0 beta1 
+===============
+- added colorPicker for the categories, you must install the ColorPicker package to use: http://modx.com/extras/package/colorpicker
+- added complete auto installer
+
 ChurchEvents 1.0 alpha4 
 ===============
 - added COLUMN exceptions to church_events db table for repeating events that need one or more exceptions

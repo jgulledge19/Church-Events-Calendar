@@ -1,8 +1,8 @@
 --------------------
 Snippet: ChurchEvents
 --------------------
-Version: 1.0 alpha
-Rewritten: November 16, 2011
+Version: 1.0 beta1
+Rewritten: December 7, 2011
 Author: Joshua Gulledge <jgulledge19@hotmail.com>
 License: GNU GPLv2 (or later at your option)
 
@@ -13,7 +13,7 @@ Usage:
     To use the calendar grid view call on the snippet like: [[!churchEventsCalendar? ]] 
     in a chunk or resource/page.  Or just create a new resource and select the ChurchEvents template.
     You must be logged into the manager to manage events, calendars and categories.
-    Requires FormIt Package
+    Requires FormIt Package, optional ColorPicker: http://modx.com/extras/package/colorpicker 
     Calendars, Categories and Locations are now managed via the backend manager.  
     Add/Edit/Delete/Request Events is still done via the calendar grid.
 
@@ -29,7 +29,7 @@ Features:
     - Several more before a 1.0 pl
     
 Developers Info:
-    1.0 Alpha4 and now use jQuery older versions used the mootools JavaScript Library: http://mootools.net and 
+    1.0 Alpha4 and newer use jQuery older versions used the mootools JavaScript Library: http://mootools.net and 
     the mootools date picker: http://mootools.net/forge/p/mootools_datepicker.  See old documentation at: 
     http://www.joshua19media.com/modx-development/church-events-docs.html much if it is still relevant, I 
     will be updating docs before a release canidate.  
@@ -38,6 +38,10 @@ More Docs: http://rtfm.modx.com/display/ADDON/Church+Events+Calendar
 
 How to Install:
 1. Install via the MODX Revolution package managment
+2. Add TinyMCE editor to Public Description on add/edit form.  
+    Note you will have to add in a snippet for this feature to work.
+    See: http://forums.modx.com/thread/72206/tinymce-addon-and-using-it-with-forms#dis-post-401943
+ONLY For alphas:
 2. Manualy install the CMP:
     See http://rtfm.modx.com/display/revolution20/Custom+Manager+Pages+Tutorial for more help
     a. Create Namespace:  System->Namespace
@@ -96,11 +100,8 @@ How to Install:
          Value: Yes
          Description: Use the location manager.  If yes events will choose from a list of locations and events can check for conflicts.  If no then each event can have a typed in a location and no event is checked for conflict.
 5. Then run the install snippet: [[installChurchEvents]]
-6. Add TinyMCE editor to Public Description on add/edit form.  
-    Note you will have to add in a snippet for this feature to work.
-    See: http://forums.modx.com/thread/72206/tinymce-addon-and-using-it-with-forms#dis-post-401943
 
-Extending - adding more fields to the event
+Extending - adding more fields to the add/edit event form
 1. Simply add another field on the form and the name has to start with extend_.  So an example is you want to 
     have audio & video checkbox.  Just add the form element like so: <input type="checkbox" name="extend_audio_video" value="Yes">
     Now you will be able to call on that as a property [[+extend_audio_video]] in the event description.

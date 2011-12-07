@@ -328,19 +328,23 @@ Cmp.window.UpdateCategory = function(config) {
             ,width: 300
             ,allowBlank : false
         },{
-            xtype: 'textfield'
+            // color picker
+            xtype: 'colorpickerfield'//xtype: 'textfield'
             ,fieldLabel: _('churchevents.category_background')
             ,name: 'background'
             ,maxLength: 6
             ,width: 300
             ,allowBlank : false
+            ,cls: 'noShadow'
         },{
-            xtype: 'textfield'
+            // color picker
+            xtype: 'colorpickerfield'//xtype: 'textfield'
             ,fieldLabel: _('churchevents.category_color')
             ,name: 'color'
             ,maxLength: 6
             ,width: 300
             ,allowBlank : false
+            ,cls: 'noShadow'
         }]
     });
     Cmp.window.UpdateCategory.superclass.constructor.call(this,config);
@@ -363,19 +367,23 @@ Cmp.window.CreateCategory = function(config) {
             ,width: 300
             ,allowBlank : false
         },{
-            xtype: 'textfield'
+            // color picker
+            xtype: 'colorpickerfield'//xtype: 'textfield'
             ,fieldLabel: _('churchevents.category_background')
             ,name: 'background'
             ,maxLength: 6
             ,width: 300
             ,allowBlank : false
+            ,cls: 'noShadow'
         },{
-            xtype: 'textfield'
+            // color picker
+            xtype: 'colorpickerfield'//xtype: 'textfield'
             ,fieldLabel: _('churchevents.category_color')
             ,name: 'color'
             ,maxLength: 6
             ,width: 300
             ,allowBlank : false
+            ,cls: 'noShadow'
         }]
     });
     Cmp.window.CreateCategory.superclass.constructor.call(this,config);
