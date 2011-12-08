@@ -1,8 +1,8 @@
 --------------------
 Snippet: ChurchEvents
 --------------------
-Version: 1.0 beta1
-Rewritten: December 7, 2011
+Version: 1.0 beta2
+Rewritten: December 8, 2011
 Author: Joshua Gulledge <jgulledge19@hotmail.com>
 License: GNU GPLv2 (or later at your option)
 
@@ -41,6 +41,10 @@ How to Install:
 2. Add TinyMCE editor to Public Description on add/edit form.  
     Note you will have to add in a snippet for this feature to work.
     See: http://forums.modx.com/thread/72206/tinymce-addon-and-using-it-with-forms#dis-post-401943
+3. Go to System -> System Settings
+    A. Where you see core in a drop down select churchevents
+    B. Now you will see some options, you will need to put in a value for Page/Resource ID
+
 ONLY For alphas:
 2. Manualy install the CMP:
     See http://rtfm.modx.com/display/revolution20/Custom+Manager+Pages+Tutorial for more help

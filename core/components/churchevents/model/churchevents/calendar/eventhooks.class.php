@@ -364,8 +364,10 @@ class eventHooks extends fiHooks{
                     // get parent:
                     $pr = $this->modx->getObject('ChurchEvents',$event->get('parent_id'));
                     // $pr->remove();
-                    list($s_date, $tmp ) =  explode(' ',$pr->get('start_date'));
-                    $existing_events[$s_date] =  $pr->get('id');
+                    if ( is_object($pr) ) {
+                        list($s_date, $tmp ) =  explode(' ',$pr->get('start_date'));
+                        $existing_events[$s_date] =  $pr->get('id');
+                    }
                     // $input_data['parent_id'] = 0;
                 } else {
                     $child_events = $this->modx->getCollection('ChurchEvents',array(

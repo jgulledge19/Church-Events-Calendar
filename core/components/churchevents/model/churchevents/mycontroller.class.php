@@ -106,10 +106,13 @@ class myController {
     public function getChunk($name,$properties = array()) {
         $chunk = null;
         if (!isset($this->chunks[$name])) {
-            $chunk = $this->_getTplChunk($name);
-            if (empty($chunk)) {
-                $chunk = $this->modx->getObject('modChunk',array('name' => $name),true);
-                if ($chunk == false) return false;
+            // use objects first:
+            $chunk = $this->modx->getObject('modChunk',array('name' => $name),true);
+            if ($chunk == false) {
+                $chunk = $this->_getTplChunk($name);
+                if (empty($chunk)) {
+                     return false;
+                }
             }
             $this->chunks[$name] = $chunk->getContent();
         } else {

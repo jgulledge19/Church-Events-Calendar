@@ -343,7 +343,7 @@
                 <p>[[+eventTimed_heading]]</p>
                 <ul>
                     <li class="full">
-                        <input name="event_timed" [[!+fi.event_timed:FormItIsChecked=`Y`]]  type="radio" value="Y" id="rd_event_timed_Y" class="radio" /> 
+                        <input name="event_timed" [[!+fi.event_timed:FormItIsChecked=`Y`]]  type="radio" value="Y" id="rd_event_timed_Y" class="radio changeToggle" /> 
                         <label for="rd_event_timed_Y">[[+eventTimedYes_label]]</label>
                         <div id="ul_time" style="height: 60px; margin-left: 25px;">
                             <ul>
@@ -396,13 +396,13 @@
                     <!-- 
                     Future:
                     <li class="full">
-                        <input name="event_timed" type="radio" value="N" id="rd_event_timed_N" class="radio"  /> 
+                        <input name="event_timed" type="radio" value="N" id="rd_event_timed_N" class="radio changeToggle" /> 
                         <label for="rd_event_timed_N">No, this is just a note (will not check for conflicts)</label>
                     </li>
                     -->
 
                     <li class="full">
-                        <input name="event_timed" type="radio" value="allday" [[!+fi.event_timed:FormItIsChecked=`allday`]] id="rd_event_timed_allday" class="radio"  /> 
+                        <input name="event_timed" type="radio" value="allday" [[!+fi.event_timed:FormItIsChecked=`allday`]] id="rd_event_timed_allday" class="radio changeToggle"  /> 
                         <label for="rd_event_timed_allday">[[+eventTimedAllday_label]]</label>
                     </li>
                     

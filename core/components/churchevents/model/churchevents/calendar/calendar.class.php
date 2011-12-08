@@ -371,45 +371,48 @@ class Calendar {
             $default_id = $this->modx->resource->get('id');
         }
         $this->filters['pageID'] = $this->modx->getOption('churchevents.pageID', $scriptProperties, $default_id);
+        if ( empty($this->filters['pageID']) ) {
+            $this->filters['pageID'] = $default_id;
+        } 
         // chunks
-        $skin = $this->modx->getOption('skin', $scriptProperties, 'churchevents_');
+        $skin = $this->modx->getOption('skin', $scriptProperties, 'churchevents');
         $this->filters['emailRequestNoticeTpl'] = $this->modx->getOption('emailRequestNoticeTpl', $scriptProperties, 'emailRequestNoticeTpl');
         $this->filters['emailBasicLocationTpl'] = $this->modx->getOption('emailBasicLocationTpl', $scriptProperties, 'emailBasicLocationTpl');
         $this->filters['emailLocationTypeTpl'] = $this->modx->getOption('emailLocationTypeTpl', $scriptProperties, 'emailLocationTypeTpl');
         $this->filters['emailLocationTpl'] = $this->modx->getOption('emailLocationTpl', $scriptProperties, 'emailLocationTpl');
         
-        $this->filters['headTpl'] = $this->modx->getOption('headTpl', $scriptProperties, $skin.'headTpl');
-        $this->filters['categoryHeadTpl'] = $this->modx->getOption('categoryHeadTpl', $scriptProperties, $skin.'categoryHeadTpl');
-        $this->filters['calFilterTpl'] = $this->modx->getOption('calFilterTpl', $scriptProperties, $skin.'calFilterTpl');
-        $this->filters['calTableTpl'] = $this->modx->getOption('calTableTpl', $scriptProperties, $skin.'calTableTpl');
-        $this->filters['calSearchTpl'] = $this->modx->getOption('calSearchTpl', $scriptProperties, $skin.'calSearchTpl');
-        $this->filters['calRowTpl'] = $this->modx->getOption('calRowTpl', $scriptProperties, $skin.'calRowTpl');
-        $this->filters['calNavTpl'] = $this->modx->getOption('calNavTpl', $scriptProperties, $skin.'calNavTpl');
-        $this->filters['calEventTpl'] = $this->modx->getOption('calEventTpl', $scriptProperties, $skin.'calEventTpl');
-        $this->filters['calDayHolderTpl'] = $this->modx->getOption('calDayHolderTpl', $scriptProperties, $skin.'calDayHolderTpl');
-        $this->filters['calColumnHeadTpl'] = $this->modx->getOption('calColumnHeadTpl', $scriptProperties, $skin.'calColumnHeadTpl');
-        $this->filters['calColumnTpl'] = $this->modx->getOption('calColumnTpl', $scriptProperties, $skin.'calColumnTpl');
-        //$this->filters[''] = $skin.'';
-        $this->filters['eventDescriptionTpl'] = $this->modx->getOption('eventDescriptionTpl', $scriptProperties, $skin.'eventDescriptionTpl');
-        $this->filters['eventDescriptionBasicLocationTpl'] = $this->modx->getOption('eventDescriptionBasicLocationTpl', $scriptProperties, $skin.'eventDescriptionBasicLocationTpl');
-        $this->filters['eventDescriptionLocationTypeTpl'] = $this->modx->getOption('eventDescriptionLocationTypeTpl', $scriptProperties, $skin.'eventDescriptionLocationTypeTpl');
-        $this->filters['eventDescriptionLocationTpl'] = $this->modx->getOption('eventDescriptionLocationTpl', $scriptProperties, $skin.'eventDescriptionLocationTpl');
-        //$this->filters[''] = $skin.'';
-        $this->filters['eventFormHeadTpl'] = $this->modx->getOption('eventFormHeadTpl', $scriptProperties, $skin.'eventFormHeadTpl');
-        $this->filters['eventFormTpl'] = $this->modx->getOption('eventFormTpl', $scriptProperties, $skin.'eventFormTpl');
-        $this->filters['eventFormConflictTpl'] = $this->modx->getOption('eventFormConflictTpl', $scriptProperties, $skin.'eventFormConflictTpl');
-        $this->filters['eventFormAdminTpl'] = $this->modx->getOption('eventFormAdminTpl', $scriptProperties, $skin.'eventFormAdminTpl');
-        $this->filters['eventFormRepeatTpl'] = $this->modx->getOption('eventFormRepeatTpl', $scriptProperties, $skin.'eventFormRepeatTpl');
-        $this->filters['eventFormBasicLocationTpl'] = $this->modx->getOption('eventFormBasicLocationTpl', $scriptProperties, $skin.'eventFormBasicLocationTpl');
-        $this->filters['eventFormLocationTypeTpl'] = $this->modx->getOption('eventFormLocationTypeTpl', $scriptProperties, $skin.'eventFormLocationTypeTpl');
-        $this->filters['eventFormLocationTpl'] = $this->modx->getOption('eventFormLocationTpl', $scriptProperties, $skin.'eventFormLocationTpl');
-        //$this->filters[''] = $skin.'';
-        $this->filters['deleteFormHeadTpl'] = $this->modx->getOption('deleteFormHeadTpl', $scriptProperties, $skin.'deleteFormHeadTpl');
-        $this->filters['deleteFormTpl'] = $this->modx->getOption('deleteFormTpl', $scriptProperties, $skin.'deleteFormTpl');
-        $this->filters['deleteFormRepeatTpl'] = $this->modx->getOption('deleteFormRepeatTpl', $scriptProperties, $skin.'deleteFormRepeatTpl');
+        $this->filters['headTpl'] = $this->modx->getOption('headTpl', $scriptProperties, $skin.'_headTpl');
+        $this->filters['categoryHeadTpl'] = $this->modx->getOption('categoryHeadTpl', $scriptProperties, $skin.'_categoryHeadTpl');
+        $this->filters['calFilterTpl'] = $this->modx->getOption('calFilterTpl', $scriptProperties, $skin.'_calFilterTpl');
+        $this->filters['calTableTpl'] = $this->modx->getOption('calTableTpl', $scriptProperties, $skin.'_calTableTpl');
+        $this->filters['calSearchTpl'] = $this->modx->getOption('calSearchTpl', $scriptProperties, $skin.'_calSearchTpl');
+        $this->filters['calRowTpl'] = $this->modx->getOption('calRowTpl', $scriptProperties, $skin.'_calRowTpl');
+        $this->filters['calNavTpl'] = $this->modx->getOption('calNavTpl', $scriptProperties, $skin.'_calNavTpl');
+        $this->filters['calEventTpl'] = $this->modx->getOption('calEventTpl', $scriptProperties, $skin.'_calEventTpl');
+        $this->filters['calDayHolderTpl'] = $this->modx->getOption('calDayHolderTpl', $scriptProperties, $skin.'_calDayHolderTpl');
+        $this->filters['calColumnHeadTpl'] = $this->modx->getOption('calColumnHeadTpl', $scriptProperties, $skin.'_calColumnHeadTpl');
+        $this->filters['calColumnTpl'] = $this->modx->getOption('calColumnTpl', $scriptProperties, $skin.'_calColumnTpl');
+        //$this->filters[''] = $skin.'_';
+        $this->filters['eventDescriptionTpl'] = $this->modx->getOption('eventDescriptionTpl', $scriptProperties, $skin.'_eventDescriptionTpl');
+        $this->filters['eventDescriptionBasicLocationTpl'] = $this->modx->getOption('eventDescriptionBasicLocationTpl', $scriptProperties, $skin.'_eventDescriptionBasicLocationTpl');
+        $this->filters['eventDescriptionLocationTypeTpl'] = $this->modx->getOption('eventDescriptionLocationTypeTpl', $scriptProperties, $skin.'_eventDescriptionLocationTypeTpl');
+        $this->filters['eventDescriptionLocationTpl'] = $this->modx->getOption('eventDescriptionLocationTpl', $scriptProperties, $skin.'_eventDescriptionLocationTpl');
+        //$this->filters[''] = $skin.'_';
+        $this->filters['eventFormHeadTpl'] = $this->modx->getOption('eventFormHeadTpl', $scriptProperties, $skin.'_eventFormHeadTpl');
+        $this->filters['eventFormTpl'] = $this->modx->getOption('eventFormTpl', $scriptProperties, $skin.'_eventFormTpl');
+        $this->filters['eventFormConflictTpl'] = $this->modx->getOption('eventFormConflictTpl', $scriptProperties, $skin.'_eventFormConflictTpl');
+        $this->filters['eventFormAdminTpl'] = $this->modx->getOption('eventFormAdminTpl', $scriptProperties, $skin.'_eventFormAdminTpl');
+        $this->filters['eventFormRepeatTpl'] = $this->modx->getOption('eventFormRepeatTpl', $scriptProperties, $skin.'_eventFormRepeatTpl');
+        $this->filters['eventFormBasicLocationTpl'] = $this->modx->getOption('eventFormBasicLocationTpl', $scriptProperties, $skin.'_eventFormBasicLocationTpl');
+        $this->filters['eventFormLocationTypeTpl'] = $this->modx->getOption('eventFormLocationTypeTpl', $scriptProperties, $skin.'_eventFormLocationTypeTpl');
+        $this->filters['eventFormLocationTpl'] = $this->modx->getOption('eventFormLocationTpl', $scriptProperties, $skin.'_eventFormLocationTpl');
+        //$this->filters[''] = $skin.'_';
+        $this->filters['deleteFormHeadTpl'] = $this->modx->getOption('deleteFormHeadTpl', $scriptProperties, $skin.'_deleteFormHeadTpl');
+        $this->filters['deleteFormTpl'] = $this->modx->getOption('deleteFormTpl', $scriptProperties, $skin.'_deleteFormTpl');
+        $this->filters['deleteFormRepeatTpl'] = $this->modx->getOption('deleteFormRepeatTpl', $scriptProperties, $skin.'_deleteFormRepeatTpl');
         // list 
-        $this->filters['listEventTpl'] = $this->modx->getOption('listEventTpl', $scriptProperties, $skin.'listEventTpl');
-        $this->filters['listDayHolderTpl'] = $this->modx->getOption('listDayHolderTpl', $scriptProperties, $skin.'listDayHolderTpl');
+        $this->filters['listEventTpl'] = $this->modx->getOption('listEventTpl', $scriptProperties, $skin.'_listEventTpl');
+        $this->filters['listDayHolderTpl'] = $this->modx->getOption('listDayHolderTpl', $scriptProperties, $skin.'_listDayHolderTpl');
         
     }
     /**

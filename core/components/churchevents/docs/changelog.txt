@@ -1,5 +1,14 @@
 Changelog for ChurchEvents.
 
+
+ChurchEvents 1.0 beta2 
+===============
+- fixed small build error
+- fixed URL error
+- fixed js error
+- changed how skin names work they no longer require the "_" at the end.
+
+
 ChurchEvents 1.0 beta1 
 ===============
 - added colorPicker for the categories, you must install the ColorPicker package to use: http://modx.com/extras/package/colorpicker
