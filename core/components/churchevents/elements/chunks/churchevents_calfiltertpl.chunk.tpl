@@ -26,3 +26,4 @@
     <input name="id" type="hidden" value="[[*id]]" />
 
 </form>
+<p><a href="[[+icalUrl]]">iCal</a></p>

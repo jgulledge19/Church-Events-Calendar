@@ -30,6 +30,7 @@ class myController {
             'chunksPath' => $corePath.'elements/chunks/',
             'modelPath' => $corePath.'model/',
             'calendarPath' => $corePath.'model/'.$package_name.'/calendar/',
+            'icalPath' => $corePath.'model/'.$package_name.'/icalcreator/',
             'processorsPath' => $corePath.'processors/',
             'uploadPath' => $assetsPath.'uploads/',
             'templatesPath' => $corePath.'templates/',

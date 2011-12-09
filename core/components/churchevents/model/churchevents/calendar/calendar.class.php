@@ -206,6 +206,9 @@ class Calendar {
         // make event list based on filters
         $html = '';
         switch ( $this->filters['view'] ) {
+            case 'ical':
+                $this->getiCal();
+                break;
             case 'event':
                 $this->lexiconToPlaceholders();
                 $html = $this->getEvent();
@@ -513,7 +516,8 @@ class Calendar {
                 'select_calendar' => $this->selectOptions($this->calendar_array, $this->filters['church_calendar_id']),
                 'select_category' => $this->selectOptions($this->category_array, $this->filters['church_ecategory_id']),
                 'month' => $this->month_array[$this->filters['month']],
-                'year' => $this->filters['year']
+                'year' => $this->filters['year'],
+                'icalUrl' => $this->url.'view=ical'
             );
         $html = $this->getChunk($this->filters['calFilterTpl'], $properties);
         return $html;
@@ -1099,6 +1103,62 @@ ORDER BY ce.start_date ASC
         // http://www.julian-young.com/2009/07/07/php-ical-email/ & http://psoug.org/snippet/Send-iCal-Email-Meeting-Requests-using-PHP_934.htm
         // http://code.google.com/p/flaimo-php/source/browse/trunk/iCalendar_v2/?r=48
         // http://www.phpkode.com/scripts/item/ical-maker/
+        require_once $this->getConfig('icalPath').'iCalcreator.class.php';
+        $config = array( "unique_id" => $this->modx->getOption('site_name') ); // set Your unique id 
+        $v = new vcalendar( $config ); // create a new calendar instance 
+        $v->setProperty( "method", "PUBLISH" ); // required of some calendar software 
+        $v->setProperty( "x-wr-calname", $this->modx->resource->get('title') ); // required of some calendar software 
+        $v->setProperty( "X-WR-CALDESC", $this->modx->resource->get('title') ); // required of some calendar software 
+        $tz = date_default_timezone_get(); 
+        $v->setProperty( "X-WR-TIMEZONE", $tz ); // required of some calendar software 
+        //.. . 
+        // iCalUtilityFunctions::createTimezone( $v, $tz ) // creates (very simple) timezone component(-s) .. .
+        
+        // get events
+        $this->loadEvents();
+        foreach ($ev as $e_id => $event ) {
+            // $event->toArray();
+            list($date) = explode(' ',$event->get('start_date'));
+            $this->events[$date][$event->get('id')] = $this->processEvent($event);
+        }
+        foreach( $this->events as $date => $dayEvents) {
+            list($y, $m, $d) = explode('-', $date);
+            $date = $y.'-'.( strlen($m)==1 ? '0'.$m : $m ).'-'.( strlen($d)==1 ? '0'.$d : $d );
+            $timestamp =  strtotime($date);
+            foreach($dayEvents as $id => $event ) {
+                
+                $vevent = & $v->newComponent( "vevent" ); // create an event calendar component
+                switch ($event['event_timed']) {
+                    case 'Y':
+                        $vevent->setProperty( "dtstart", array( "year"=>$y, "month"=>$m, "day"=>$d, 
+                                "hour"=>$event['start_hour'], "min"=>$event['start_minute'], "sec"=>0 )); 
+                        $vevent->setProperty( "dtend", array( "year"=>$y, "month"=>$m, "day"=>$d, 
+                                "hour"=>$event['end_hour'], "min"=>$event['end_minute'], "sec"=>0 ));
+                        break;
+                    case 'allday':
+                    case 'N':
+                    default:
+                        $vevent->setProperty( "dtstart", $y.$m.$d, array("VALUE" => "DATE"));// alt. date format, now for an all-day event
+                        break;
+                }
+                //$vevent->setProperty( "LOCATION", "Central Placa" ); // property name - case independent 
+                $vevent->setProperty( "summary", $event['event_title'] ); 
+                $vevent->setProperty( "description", strip_tags($event['public_desc']) ); 
+                //$vevent->setProperty( "comment", "This is a comment" ); 
+                //$vevent->setProperty( "attendee", "attendee1@icaldomain.net" );
+                $vevent->setProperty( "organizer" , $event['contact_email'] );
+                $vevent->setProperty( "contact", $event['contact'].' tel '.$event['contact_phone'] );
+                $vevent->setProperty( "sequence", $event['version'] );// version number
+                
+            } 
+            //$vevent->setProperty( "resources", "COMPUTER PROJECTOR" ); 
+            //$vevent->setProperty( "rrule", array( "FREQ" => "WEEKLY", "count" => 4));// weekly, four occasions 
+            //$vevent->parse( "LOCATION:1CP Conference Room 4350" ); // supporting parse of strict rfc5545 formatted text .. . .. .
+            // all calendar components are described in rfc5545 .. .
+            // a complete iCalcreator function list (ex. setProperty) in iCalcreator manual .. .
+            //$v->setComponent( $vevent );
+        }
+        $v->returnCalendar(); // redirect calendar file to browser
     }
     /**
      * This will process the event details to make it ready to send to HTML
@@ -1109,6 +1169,7 @@ ORDER BY ce.start_date ASC
         list($date) = explode(' ',$event->get('start_date'));
         $time_str = '';
         $end_time = $start_time = $setup_time = NULL;
+        $hr = $min = $dhr = $dmin;
         switch ( $event->get('event_timed')  ){
             case 'Y':
                 list($d, $time) = explode(' ',$event->get('public_start'));
@@ -1165,7 +1226,21 @@ ORDER BY ce.start_date ASC
             'end_time' => $end_time,
             'event_time' => $time_str,
             'event_url' => $this->url.'view=event&amp;event_id='.$event->get('id'),//&amp;a='.$a.'
-            'notice' => $notice
+            'notice' => $notice,
+            
+            'version' => $event->get('version'),
+            'public_desc' => $event->get('public_desc'),
+            'public_start' => $event->get('public_start'),
+            'duration' => $event->get('duration'),
+            'end_date' => $event->get('end_date'),
+            'contact' => $event->get('contact'),
+            'contact_email' => $event->get('contact_email'),
+            'contact_phone' => $event->get('contact_phone'),
+            'start_hour' => $hr,
+            'start_minute' => $min,
+            'end_hour' => $hr+$dhr,
+            'end_minute' => $min+$dmin,
+            'event_timed' => $event->get('event_timed')
         );
         return $properties;
     }
