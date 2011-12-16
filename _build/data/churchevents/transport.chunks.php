@@ -248,7 +248,7 @@ $chunks[25]= $modx->newObject('modChunk');
 $chunks[25]->fromArray(array(
     'id' => 25,
     'name' => 'ChurchEvents_EventFormTpl',
-    'description' => 'The delete event form, uses FormIt',
+    'description' => 'The add/edit event form, uses FormIt',
     'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_eventformtpl.chunk.tpl'),
     'properties' => '',
 ),'',true,true);
@@ -284,7 +284,7 @@ $chunks[29]= $modx->newObject('modChunk');
 $chunks[29]->fromArray(array(
     'id' => 29,
     'name' => 'EmailBasicLocationTpl',
-    'description' => '',
+    'description' => 'Basic location information, only used if the Use Locations System Setting is No.',
     'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/emailbasiclocationtpl.chunk.tpl'),
     'properties' => '',
 ),'',true,true);
@@ -311,7 +311,7 @@ $chunks[32]= $modx->newObject('modChunk');
 $chunks[32]->fromArray(array(
     'id' => 32,
     'name' => 'EmailRequestNoticeTpl',
-    'description' => 'The is the email that will be send if a user request an event.',
+    'description' => 'The is the email that will be send if a user requests an event.',
     'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/emailrequestnoticetpl.chunk.tpl'),
     'properties' => '',
 ),'',true,true);

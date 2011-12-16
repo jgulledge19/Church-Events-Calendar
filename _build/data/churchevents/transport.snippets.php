@@ -62,4 +62,12 @@ Use like: <ul>[[!churchEventsList? &limit=`20` ]]</ul>',
 //$snippets[2]->setProperties($properties);
 //unset($properties);
 
+$snippets[3]= $modx->newObject('modSnippet');
+$snippets[3]->fromArray(array(
+    'id' => 3,
+    'name' => 'ChurchEventsRSS',
+    'description' => 'This will create a RSS feed of the month events.',
+    'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/snippet.churcheventsrss.php'),
+),'',true,true);
+
 return $snippets;

@@ -57,5 +57,14 @@ $settings['churchevents.pageID']->fromArray(array (
     'namespace' => 'churchevents',
     'area' => 'ChurchEvents',
 ), '', true, true);
+// added 1.0 beta3
+$settings['churchevents.rssPageID']= $modx->newObject('modSystemSetting');
+$settings['churchevents.rssPageID']->fromArray(array (
+    'key' => 'churchevents.rssPageID',
+    'value' => '',
+    'xtype' => 'textfield',
+    'namespace' => 'churchevents',
+    'area' => 'ChurchEvents',
+), '', true, true);
 
 return $settings;
