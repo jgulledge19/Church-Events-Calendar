@@ -178,6 +178,7 @@ class eventHooks extends fiHooks{
         // location stuff
         if ( $this->Calendar->getFilter('useLocations') ) {
             $c = $this->modx->newQuery('ChurchLocationType') ;//, array('public' => 'Yes'));
+            $c->sortby('name', 'ASC');
             $locationTypes = $this->modx->getIterator('ChurchLocationType', $c);
             
             /* iterate */
@@ -187,7 +188,7 @@ class eventHooks extends fiHooks{
                 $properties = $locationType->toArray();
                 
                 $c = $this->modx->newQuery('ChurchLocations', array('church_location_type_id' => $properties['id'], 'published'=>'Yes'));
-                
+                $c->sortby('name', 'ASC');
                 $locations = $this->modx->getIterator('ChurchLocations', $c);
                 
                 /* iterate */

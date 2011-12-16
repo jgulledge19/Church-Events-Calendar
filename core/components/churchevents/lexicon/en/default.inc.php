@@ -184,6 +184,10 @@ $_lang['churchevents.eventType_heading'] = 'What type of event is this?';
 $_lang['churchevents.eventTypePublic_label'] = 'Public';
 $_lang['churchevents.eventTypePrivate_label'] = 'Private';
 $_lang['churchevents.officeNotes_label'] = 'Office Notes';
+// filter
+$_lang['churchevents.filterLocationsN_label'] = 'Show all locations';
+$_lang['churchevents.filterLocationsY_label'] = 'Only show selected locations';
+$_lang['churchevents.filterSearch_label'] = 'Search by event title';
 
 $_lang['churchevents.repeat_heading'] = 'Saving repeating events options';
 $_lang['churchevents.editRepeat_heading'] = 'Upon saving, would you like to:';
@@ -278,3 +282,5 @@ $_lang['setting_churchevents.pageID'] = 'Page/Resource ID';
 $_lang['setting_churchevents.pageID_desc'] = 'This is the Page/Resource ID where the calendar will be located.  This is what all generated URLs are based on.';
 $_lang['setting_churchevents.useLocations'] = 'Use Locations';
 $_lang['setting_churchevents.useLocations_desc'] = 'Use the location manager.  If yes events will choose from a list of locations and events can check for conflicts.  If no then each event can have a typed in a location and no event is checked for conflict.';
+$_lang['setting_churchevents.rssPageID'] = 'RSS Page/Resource ID';
+$_lang['setting_churchevents.rssPageID_desc'] = 'This is the Page/Resource ID that will have the RSSEvents snippet and all generated RSS URLs will go here.';

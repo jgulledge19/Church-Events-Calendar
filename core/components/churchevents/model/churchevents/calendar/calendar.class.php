@@ -26,6 +26,12 @@ class Calendar {
      */
     protected $events = array();
     /**
+     * @var array $eventCount this holds the total number of events for the day
+     *      use like eventCount[$date]
+     * @access protected
+     */
+    protected $eventCount = array();
+    /**
      * @var array $filters name=>value
      * @access protected
      */
@@ -208,6 +214,11 @@ class Calendar {
         switch ( $this->filters['view'] ) {
             case 'ical':
                 $this->getiCal();
+                $this->show_calendar = false;
+                break;
+            case 'rss':
+                $html = $this->getRss();
+                $this->show_calendar = false;
                 break;
             case 'event':
                 $this->lexiconToPlaceholders();
@@ -321,7 +332,22 @@ class Calendar {
         if ( $this->show_calendar ){
             $html .= $this->displayFilters();
             $html .= $this->navigation();
-            $html .= $this->getMonth();
+            
+            switch ( $this->filters['view'] ) {
+                case 'day':
+                    $html .= $this->getDay();
+                    break;
+                case 'week':
+                    $html .= $this->getWeek();
+                    break;
+                case 'year':
+                    $html .= $this->getYear();
+                    break;
+                case 'month':
+                default:
+                    $html .= $this->getMonth();
+                    break;
+            }
         }
         
         return $html;
@@ -332,8 +358,11 @@ class Calendar {
      * @return void
      */
     public function getFilters($scriptProperties=array()){
-        
-        $this->filters['view'] = $this->modx->getOption('view', $scriptProperties, $this->getUserValue('view', NULL));
+        $saveView = false;
+        if ( isset($_REQUEST['view']) && in_array($_REQUEST['view'], array('day', 'week', 'month', 'year') )) {
+            $saveView = true;
+        }
+        $this->filters['view'] = $this->modx->getOption('view', $scriptProperties, $this->getUserValue('view', NULL, false, $saveView));
         /*if ( !in_array($view,$allow_veiws) ){
             $view = '';
         }*/
@@ -342,18 +371,26 @@ class Calendar {
          */
         // 2. do they have permissions? 
         $this->filters['event_id'] = $this->getUserValue('event_id', 0, true);
-        
-        $this->filters['month'] = $this->getUserValue('month', date("n"), true, true);
-        $this->filters['day'] = $this->getUserValue('day', date("j"), true, true);
-        $this->filters['week'] = $this->getUserValue('day', date("W"), true, true);
-        $this->filters['year'] = $this->getUserValue('year', date("Y"), true, true);
-        
         $this->filters['a'] = $this->getUserValue('a', 0);
         $this->filters['page_id'] = $this->getUserValue('id', 0);
-        $this->filters['event_id'] = $this->getUserValue('event_id', 0);
         
-        $this->filters['church_calendar_id'] = $this->getUserValue('church_calendar_id', 0, true, true);
-        $this->filters['church_ecategory_id'] = $this->getUserValue('church_ecategory_id', 0, true, true);
+        if ($this->filters['view'] == 'list' ) {
+            $this->filters['month'] = $this->modx->getOption('month', $scriptProperties, date("n"));
+            $this->filters['day'] = $this->modx->getOption('day', $scriptProperties, date("j") );
+            $this->filters['week'] = $this->modx->getOption('week', $scriptProperties, date("W") );
+            $this->filters['year'] = $this->modx->getOption('year', $scriptProperties, date("Y") );
+            
+            $this->filters['church_calendar_id'] = $this->modx->getOption('calendarID', $scriptProperties, 0);
+            $this->filters['church_ecategory_id'] = $this->modx->getOption('categoryID', $scriptProperties, 0);
+        } else {
+            $this->filters['month'] = $this->getUserValue('month', date("n"), true, true);
+            $this->filters['day'] = $this->getUserValue('day', date("j"), true, true);
+            $this->filters['week'] = $this->getUserValue('week', date("W"), true, true);
+            $this->filters['year'] = $this->getUserValue('year', date("Y"), true, true);
+            
+            $this->filters['church_calendar_id'] = $this->getUserValue('church_calendar_id', 0, true, true);
+            $this->filters['church_ecategory_id'] = $this->getUserValue('church_ecategory_id', 0, true, true);
+        }
         // set church_calendar_id in session
         
         // formats Date & Time
@@ -364,7 +401,13 @@ class Calendar {
         $this->filters['allowRequests'] = $this->modx->getOption('churchevents.allowRequests',array(), false);
         $this->filters['prominent'] = $this->modx->getOption('prominent', $scriptProperties, NULL);
         // locations - this is from the filter gui
+        $this->filters['filterSearch'] = $this->getUserValue('filterSearch', NULL, false, true);
+        $this->filters['filterLocations'] = $this->getUserValue('filterLocations', 0, true, true);
+        if ( !$this->filters['filterLocations'] ) {
+            $_REQUEST['loc'] = array();
+        }
         $this->filters['locations'] = $this->getUserValues('loc', array(), true, true);
+        
         // for the add/edit form
         $this->filters['formLocations'] = $this->getUserValues('formLoc', array(), true);
         $this->filters['showRepeatOptions'] = false;
@@ -377,6 +420,8 @@ class Calendar {
         if ( empty($this->filters['pageID']) ) {
             $this->filters['pageID'] = $default_id;
         } 
+        $this->filters['rssPageID'] = $this->modx->getOption('churchevents.rssPageID', $scriptProperties, 0);
+        $this->filters['limit'] = $this->modx->getOption('limit', $scriptProperties, 15);
         // chunks
         $skin = $this->modx->getOption('skin', $scriptProperties, 'churchevents');
         $this->filters['emailRequestNoticeTpl'] = $this->modx->getOption('emailRequestNoticeTpl', $scriptProperties, 'emailRequestNoticeTpl');
@@ -384,17 +429,41 @@ class Calendar {
         $this->filters['emailLocationTypeTpl'] = $this->modx->getOption('emailLocationTypeTpl', $scriptProperties, 'emailLocationTypeTpl');
         $this->filters['emailLocationTpl'] = $this->modx->getOption('emailLocationTpl', $scriptProperties, 'emailLocationTpl');
         
+        $this->filters['rssTpl'] = $this->modx->getOption('rssTpl', $scriptProperties, 'eventsRssTpl');
+        $this->filters['rssItemTpl'] = $this->modx->getOption('rssItemTpl', $scriptProperties, 'eventsRssItemTpl');
+        
         $this->filters['headTpl'] = $this->modx->getOption('headTpl', $scriptProperties, $skin.'_headTpl');
+        // Day veiw:
+        $this->filters['dayEventTpl'] = $this->modx->getOption('dayEventTpl', $scriptProperties, $skin.'_DayEventTpl');
+        $this->filters['dayHolderTpl'] = $this->modx->getOption('dayHolderTpl', $scriptProperties, $skin.'_DayHolderTpl');
+        // Week View:  weekColumnHeadTpl, weekColumnTpl, weekRowTpl, weekTableTpl 
+        $this->filters['weekTableTpl'] = $this->modx->getOption('weekTableTpl', $scriptProperties, $skin.'_calTableTpl');
+        $this->filters['weekRowTpl'] = $this->modx->getOption('weekRowTpl', $scriptProperties, $skin.'_calRowTpl');
+        $this->filters['calEventTpl'] = $this->modx->getOption('calEventTpl', $scriptProperties, $skin.'_calEventTpl');
+        $this->filters['calDayHolderTpl'] = $this->modx->getOption('calDayHolderTpl', $scriptProperties, $skin.'_calDayHolderTpl');
+        $this->filters['weekColumnHeadTpl'] = $this->modx->getOption('weekColumnHeadTpl', $scriptProperties, $skin.'_calColumnHeadTpl');
+        $this->filters['weekColumnTpl'] = $this->modx->getOption('weekColumnTpl', $scriptProperties, $skin.'_calColumnTpl');
+       
         $this->filters['categoryHeadTpl'] = $this->modx->getOption('categoryHeadTpl', $scriptProperties, $skin.'_categoryHeadTpl');
         $this->filters['calFilterTpl'] = $this->modx->getOption('calFilterTpl', $scriptProperties, $skin.'_calFilterTpl');
-        $this->filters['calTableTpl'] = $this->modx->getOption('calTableTpl', $scriptProperties, $skin.'_calTableTpl');
-        $this->filters['calSearchTpl'] = $this->modx->getOption('calSearchTpl', $scriptProperties, $skin.'_calSearchTpl');
-        $this->filters['calRowTpl'] = $this->modx->getOption('calRowTpl', $scriptProperties, $skin.'_calRowTpl');
+        // filterLocationTpl
+        $this->filters['calFilterLocationTypeTpl'] = $this->modx->getOption('calFilterLocationTypeTpl', $scriptProperties, $skin.'_CalFilterLocationTypeTpl');
+        $this->filters['calFilterLocationTpl'] = $this->modx->getOption('calFilterLocationTpl', $scriptProperties, $skin.'_CalFilterLocationTpl');
         $this->filters['calNavTpl'] = $this->modx->getOption('calNavTpl', $scriptProperties, $skin.'_calNavTpl');
+        
+        // Month view:
+        $this->filters['calTableTpl'] = $this->modx->getOption('calTableTpl', $scriptProperties, $skin.'_calTableTpl');
+        $this->filters['calRowTpl'] = $this->modx->getOption('calRowTpl', $scriptProperties, $skin.'_calRowTpl');
         $this->filters['calEventTpl'] = $this->modx->getOption('calEventTpl', $scriptProperties, $skin.'_calEventTpl');
         $this->filters['calDayHolderTpl'] = $this->modx->getOption('calDayHolderTpl', $scriptProperties, $skin.'_calDayHolderTpl');
         $this->filters['calColumnHeadTpl'] = $this->modx->getOption('calColumnHeadTpl', $scriptProperties, $skin.'_calColumnHeadTpl');
         $this->filters['calColumnTpl'] = $this->modx->getOption('calColumnTpl', $scriptProperties, $skin.'_calColumnTpl');
+        // Year view:
+        $this->filters['yearTableTpl'] = $this->modx->getOption('yearTableTpl', $scriptProperties, $skin.'_calTableTpl');
+        $this->filters['yearRowTpl'] = $this->modx->getOption('yearRowTpl', $scriptProperties, $skin.'_calRowTpl');
+        $this->filters['yearColumnHeadTpl'] = $this->modx->getOption('yearColumnHeadTpl', $scriptProperties, $skin.'_calColumnHeadTpl');
+        $this->filters['yearColumnTpl'] = $this->modx->getOption('yearColumnTpl', $scriptProperties, $skin.'_yearColumnTpl');
+        
         //$this->filters[''] = $skin.'_';
         $this->filters['eventDescriptionTpl'] = $this->modx->getOption('eventDescriptionTpl', $scriptProperties, $skin.'_eventDescriptionTpl');
         $this->filters['eventDescriptionBasicLocationTpl'] = $this->modx->getOption('eventDescriptionBasicLocationTpl', $scriptProperties, $skin.'_eventDescriptionBasicLocationTpl');
@@ -416,7 +485,6 @@ class Calendar {
         // list 
         $this->filters['listEventTpl'] = $this->modx->getOption('listEventTpl', $scriptProperties, $skin.'_listEventTpl');
         $this->filters['listDayHolderTpl'] = $this->modx->getOption('listDayHolderTpl', $scriptProperties, $skin.'_listDayHolderTpl');
-        
     }
     /**
      * get a GET, POST, REQUEST, SESSION or COOKIE
@@ -432,7 +500,9 @@ class Calendar {
             $value = $_REQUEST[$key];
         } else if ( isset($_SESSION[$key]) && !$is_numeric || ( isset($_SESSION[$key]) && is_numeric($_SESSION[$key]) ) ){
             $value = $_SESSION[$key];
-        } if ( isset($_COOKIE[$key]) && !$is_numeric || ( isset($_COOKIE[$key]) && is_numeric($_COOKIE[$key]) ) ){
+        } else if ( isset($_REQUEST[$key]) && is_array($_REQUEST[$key]) ) {
+            $value = $_SESSION[$key];
+        } else if ( isset($_COOKIE[$key]) && !$is_numeric || ( isset($_COOKIE[$key]) && is_numeric($_COOKIE[$key]) ) ){
             $value = $_COOKIE[$key];
         } 
         if ( $save ) {
@@ -452,9 +522,9 @@ class Calendar {
         $values = $default;
         if ( isset($_REQUEST[$key]) ) {
             $values = $_REQUEST[$key];
-        } else if ( isset($_SESSION[$key]) && !$is_numeric || ( isset($_SESSION[$key]) && is_numeric($_SESSION[$key]) ) ){
+        } else if ( isset($_SESSION[$key]) ){
             $values = $_SESSION[$key];
-        } if ( isset($_COOKIE[$key]) && !$is_numeric || ( isset($_COOKIE[$key]) && is_numeric($_COOKIE[$key]) ) ){
+        } if ( isset($_COOKIE[$key]) ){
             $values = $_COOKIE[$key];
         } 
         if ($is_numeric ) {
@@ -467,9 +537,9 @@ class Calendar {
             $values = $tmp;
         }
         if ( $save ) {
-            $_COOKIE[$key] = $_SESSION[$key] = $value;
+            $_COOKIE[$key] = $_SESSION[$key] = $values;
         }
-        return $value;
+        return $values;
     }
     
     /**
@@ -510,14 +580,59 @@ class Calendar {
                 $this->category_array[$chCat->get('name')] = $chCat->get('id');
             }
         }
-        
+        // get locations:
+        $locFilters = NULL;
+        // location stuff
+        if ( $this->getFilter('useLocations') ) {
+            $c = $this->modx->newQuery('ChurchLocationType') ;//, array('public' => 'Yes'));
+            $c->sortby('name', 'ASC');
+            $locationTypes = $this->modx->getIterator('ChurchLocationType', $c);
+            
+            /* iterate */
+            $list = array();
+            $locationType_string = '';
+                //print_r($this->filters['locations']);
+            foreach ($locationTypes as $locationType) {
+                $properties = $locationType->toArray();
+                $c = $this->modx->newQuery('ChurchLocations', array('church_location_type_id' => $properties['id'], 'published'=>'Yes'));
+                $c->sortby('name', 'ASC');
+                $locations = $this->modx->getIterator('ChurchLocations', $c);
+                
+                /* iterate */
+                $list = array();
+                $location_string = '';
+                foreach ($locations as $location) {
+                    $locProperties = $location->toArray();
+                    $locProperties['input_name'] = 'loc[]';
+                    $locProperties['is_checked'] = $this->isChecked((in_array($location->get('id'),$this->filters['locations']) ? 1 : 0), 1);
+                    $location_string .= $this->getChunk($this->getFilter('calFilterLocationTpl'), $locProperties);
+                }
+                if (!empty($location_string) ) {
+                    $properties['locations'] = $location_string;
+                    $locationType_string .= $this->getChunk($this->getFilter('calFilterLocationTypeTpl'), $properties);
+                }
+                
+            }
+            $locFilters = $locationType_string;
+            
+        } 
         $properties = array(
                 'assets_url' => MODX_ASSETS_URL,
                 'select_calendar' => $this->selectOptions($this->calendar_array, $this->filters['church_calendar_id']),
                 'select_category' => $this->selectOptions($this->category_array, $this->filters['church_ecategory_id']),
                 'month' => $this->month_array[$this->filters['month']],
                 'year' => $this->filters['year'],
-                'icalUrl' => $this->url.'view=ical'
+                'day' => $this->filters['day'],
+                'view' => $this->filters['view'],
+                'icalUrl' => $this->url.'view=ical',
+                'rssUrl' => $this->modx->makeUrl($this->filters['rssPageID']),
+                'locationInfo' => $locFilters,
+                'filterLocations_checked' => $this->isChecked($this->getFilter('filterLocations'), 1),
+                'filterLocations' => $this->getFilter('filterLocations'),
+                'filterLocationsY_label' => $this->modx->lexicon('churchevents.filterLocationsY_label'),
+                'filterLocationsN_label' => $this->modx->lexicon('churchevents.filterLocationsN_label'),
+                'filterSearch_label' => $this->modx->lexicon('churchevents.filterSearch_label'),
+                'filterSearch' => $this->getFilter('filterSearch')
             );
         $html = $this->getChunk($this->filters['calFilterTpl'], $properties);
         return $html;
@@ -758,26 +873,64 @@ class Calendar {
      * @param string $view
      * @return array $events
      */
-    public function loadEvents($view='month'){
+    public function loadEvents($view=NULL){
+        if ( empty($view) ) {
+            $view = $this->filters['view'];
+        }
         $query = $this->modx->newQuery('ChurchEvents');
+        // now sort by location(s) $this->filters['locations']
+        if ( !empty($this->filters['locations']) && $this->filters['useLocations']) {
+            $query->innerJoin('ChurchEventLocations','EventLocations');
+            $query->where(array( 'EventLocations.church_location_id:IN' => $this->filters['locations']));
+        }
         //$c->innerJoin('BoxOwner','Owner'); // arguments are: className, alias
-        $start_where = date("Y-m-d", (strtotime($this->filters['year'].'-'.$this->filters['month'].'-01')-6*3600*24) );
-        if ( $view == 'list' ) {
-            // limit? prominent?
-            $query->where(array(
-                'start_date:>=' => $start_where
-            ));
-            if ( !empty($this->filters['prominent'])) {
-                $query->andCondition(array( 'prominent' => $this->filters['prominent'] ) );
-            }
-        } else if ( $view == 'month' || 1 == 1) {
-            $end_where = date("Y-m-d", (strtotime($this->filters['year'].'-'.$this->filters['month'].'-31')+6*3600*24) );
-            $query->where(array(
-                'start_date:>=' => $start_where,
-                'start_date:<=' => $end_where
-            ));
-        } else {
-            
+        switch ($view) {
+            case 'list':
+                $start_where = date("Y-m-d", (strtotime($this->filters['year'].'-'.$this->filters['month'].'-'.$this->filters['day'])) );
+                // limit? prominent?
+                $query->where(array(
+                    'start_date:>=' => $start_where
+                ));
+                break;
+            case 'day':
+                $time = strtotime($this->filters['year'].'-'.$this->filters['month'].'-'.$this->filters['day']);
+                $start_where = date("Y-m-d", $time);
+                $end_where =  date("Y-m-d", $time+24*3600);
+                // limit? prominent?
+                $query->where(array(
+                    'start_date:=' => $start_where
+                ));
+                break;
+            case 'week' :
+                $time = strtotime($this->filters['year'].'-'.$this->filters['month'].'-'.$this->filters['day']);
+                // set start date to Sunday
+                // w - 0 to 6 for Sunday to Saturday, W - # of the week 
+                // addjust to make the start date on Sunday
+                if( date("w",$time) > 0 ){
+                     $time-= 3600*60*date("w",$time);
+                     // now reset the day filter:
+                     $_REQUEST['day'] = date("j",$time);
+                     $this->filters['day'] = $this->getUserValue('day', date("j",$time), true, true);
+                }
+                $start_where = date("Y-m-d", $time );// Sunday 
+                $end_where = date("Y-m-d", $time+6*3600*24 );// Saturday 
+                $query->where(array(
+                    'start_date:>=' => $start_where,
+                    'start_date:<=' => $end_where
+                ));
+                break;
+            case 'month':
+            default:
+                $start_where = date("Y-m-d", (strtotime($this->filters['year'].'-'.$this->filters['month'].'-01')-6*3600*24) );
+                $end_where = date("Y-m-d", (strtotime($this->filters['year'].'-'.$this->filters['month'].'-31')+6*3600*24) );
+                $query->where(array(
+                    'start_date:>=' => $start_where,
+                    'start_date:<=' => $end_where
+                ));
+                break;
+        }
+        if ( !empty($this->filters['prominent'])) {
+            $query->andCondition(array( 'prominent' => $this->filters['prominent'] ) );
         }
         /**
          * SELECT * FROM modx_church_events ce
@@ -797,7 +950,10 @@ ORDER BY ce.start_date ASC
         if ( $this->filters['church_ecategory_id'] > 0 ) {
             $query->andCondition(array( 'church_ecategory_id' => $this->filters['church_ecategory_id'] ) );
         }
-        
+        // 
+        if ( !empty($this->filters['filterSearch']) ) {
+            $query->andCondition(array( 'title:LIKE' => '%'.$this->filters['filterSearch'].'%' ) );
+        }
         if ( !$this->modx->user->isAuthenticated('mgr') ) {
             //echo '<br>test status <br>';
             $query->andCondition(array( 'status' => 'approved' ) );
@@ -806,6 +962,9 @@ ORDER BY ce.start_date ASC
         if ( $view == 'list' ) {
             $query->limit($this->filters['limit']);
         }
+        
+        //$query->prepare();
+        //echo 'SQL:<br>'.$query->toSQL().'<br>';
         //$c->limit(5);
         $ev = $this->modx->getCollection('ChurchEvents',$query);
         //echo 'SQL:<br>'.$query->toSQL();
@@ -819,9 +978,12 @@ ORDER BY ce.start_date ASC
     
     /**
      * @param $date YYYY-MM-DD
+     * @param $eventTplFiler 
+     * @param $dayTplFilter 
+     *  
      * @return string $str this is a list of the days events
      */
-    public function eventList($date){
+    public function eventList($date, $eventTplFilter='calEventTpl', $dayTplFilter='calDayHolderTpl'){
         # this gets the events for that day
         $calDayHolderTpl = NULL;
         if( is_array($this->events) ){
@@ -836,7 +998,7 @@ ORDER BY ce.start_date ASC
                 $calEventTpl = '';
                 foreach($day_array as $e_id => $array){
                     //print_r($array);
-                    $calEventTpl .= $this->getChunk($this->filters['calEventTpl'], $array);
+                    $calEventTpl .= $this->getChunk($this->filters[$eventTplFilter], $array);
                 }
                 
                 // $add_url = ( $this->add_link ? $this->url.'view='.$this->view.'&amp;start_date='.$after_year.'-'.$after_month.'-'.$count.'&amp;'.$this->params : '' );
@@ -846,7 +1008,7 @@ ORDER BY ce.start_date ASC
                         'day' => $d,
                         'calEventTpl' => $calEventTpl
                     );
-                $calDayHolderTpl = $this->getChunk($this->filters['calDayHolderTpl'], $properties);
+                $calDayHolderTpl = $this->getChunk($this->filters[$dayTplFilter], $properties);
             } else{
                 //$str = $day_array;
             }
@@ -900,33 +1062,54 @@ ORDER BY ce.start_date ASC
          * 2. make the next url
          * this is for the month view
          */
-        # previous
-        if ( $this->filters['month'] > 1) {
-            $pre_month = $this->filters['month'] - 1;
-            $pre_year = $this->filters['year'];
-        } else {
-            $pre_month = 12;
-            $pre_year = $this->filters['year'] - 1;
+        $timeDiff = 3600*24*7;// 1 week
+        $endTime = 3600*24*6;// 6 days
+        switch( $this->filters['view'] ) {
+            case 'day':
+                $timeDiff = 3600*24;// 1 day
+                $endTime = 0;
+            case 'week':
+                $time = strtotime($this->filters['year'].'-'.$this->filters['month'].'-'.$this->filters['day']);
+                $endTime += $time;
+                $prev_url .= $this->url.'month='.date('n',$time - $timeDiff).'&amp;day='.date('j',$time - $timeDiff).'&amp;year='.date('Y',$time - $timeDiff).$params;
+                $next_url .= $this->url.'month='.date('n',$time + $timeDiff).'&amp;day='.date('j',$time + $timeDiff).'&amp;year='.date('Y',$time + $timeDiff).$params;
+                break;
+            case 'month':
+                # previous
+                if ( $this->filters['month'] > 1) {
+                    $pre_month = $this->filters['month'] - 1;
+                    $pre_year = $this->filters['year'];
+                } else {
+                    $pre_month = 12;
+                    $pre_year = $this->filters['year'] - 1;
+                }
+                
+                $prev_url .= $this->url.'month='.$pre_month.'&amp;year='.$pre_year.$params;
+                // next
+                if ( $this->filters['month'] < 12 ) {
+                    $next_month = $this->filters['month'] + 1;
+                    $next_year = $this->filters['year'];
+                } else {
+                    $next_month = 1;
+                    $next_year = $this->filters['year'] + 1;
+                }
+                $next_url .= $this->url.'month='.$next_month.'&amp;year='.$next_year.$params; 
+                $time = strtotime($this->filters['year'].'-'.$this->filters['month'].'-01');
+                $endTime += date('t', $time) - 3600*24;// last day of the month
         }
-        
-        $prev_url .= $this->url.'month='.$pre_month.'&amp;year='.$pre_year.$params;
-        // next
-        if ( $this->filters['month'] < 12 ) {
-            $next_month = $this->filters['month'] + 1;
-            $next_year = $this->filters['year'];
-        } else {
-            $next_month = 1;
-            $next_year = $this->filters['year'] + 1;
-        }
-        $next_url .= $this->url.'month='.$next_month.'&amp;year='.$next_year.$params; 
-        
         $properties = array(
                 'month' => $this->month_array[$this->filters['month']],
+                'day' => $this->filters['day'],
                 'year' => $this->filters['year'],
+                'startDate' => $time,
+                'endDate' => $endTime,
+                'startDateFormated' => strftime($this->filters['dateFormat'], $time),
+                'endDateFormated' => strftime($this->filters['dateFormat'], $endTime),
                 'previous' => $this->modx->lexicon('churchevents.previous'),
                 'next' => $this->modx->lexicon('churchevents.next'),
                 'prev_url' => $prev_url,
-                'next_url' => $next_url
+                'next_url' => $next_url,
+                'view' => $this->filters['view']
             );
         return $this->getChunk($chunk,$properties);
     }
@@ -1017,6 +1200,63 @@ ORDER BY ce.start_date ASC
         return $this->getChunk($this->filters['eventDescriptionTpl'],$properties);
     }
     /**
+     * Count events for each day over a giving period
+     * @return string html
+     */
+    public function countEvents($start, $end) {
+        $query = $this->modx->newQuery('ChurchEvents');
+        $query->select('`ChurchEvents`.`id` AS `ChurchEvents_id`, COUNT(*) AS `church_calendar_id`, `ChurchEvents`.`start_date`' );// http://rtfm.modx.com/display/xPDO20/xPDOQuery.select
+        //$query->select($this->modx->getSelectColumns('ChurchEvents','ChurchEvents','',array('id', 'COUNT(*) AS K', 'ChurchEvents.*')) );
+        // now sort by location(s) $this->filters['locations']
+        if ( !empty($this->filters['locations']) && $this->filters['useLocations']) {
+            $query->innerJoin('ChurchEventLocations','EventLocations');
+            $query->where(array( 'EventLocations.church_location_id:IN' => $this->filters['locations']));
+        }
+        $query->where(array(
+            'start_date:>=' => $start,
+            'start_date:<=' => $end
+        ));
+        if ( !empty($this->filters['prominent'])) {
+            $query->andCondition(array( 'prominent' => $this->filters['prominent'] ) );
+        }
+        // this is currently only allow 1 calander view - should make this many
+        if ( $this->filters['church_calendar_id'] > 0 ) {
+            $query->andCondition(array( 'church_calendar_id' => $this->filters['church_calendar_id'] ) );
+        }
+        // church_ecategory_id
+        if ( $this->filters['church_ecategory_id'] > 0 ) {
+            $query->andCondition(array( 'church_ecategory_id' => $this->filters['church_ecategory_id'] ) );
+        }
+        // 
+        if ( !empty($this->filters['filterSearch']) ) {
+            $query->andCondition(array( 'title:LIKE' => '%'.$this->filters['filterSearch'].'%' ) );
+        }
+        if ( !$this->modx->user->isAuthenticated('mgr') ) {
+            //echo '<br>test status <br>';
+            $query->andCondition(array( 'status' => 'approved' ) );
+        }
+        //$query->sortby('start_date','ASC');
+        $query->groupby('start_date');
+        $query->prepare();
+        echo 'SQL:<br>'.$query->toSQL().'<br>';
+        $ev = $this->modx->getIterator('ChurchEvents',$query);
+        $this->eventCount = array();
+        foreach ($ev as $event ) {
+            
+            $tmp = $event->toArray();
+            list($date) = explode(' ',$event->get('start_date'));
+            echo '<br>D: '.$date. ' K: '.$event->get('K');
+            echo ' Date: '.$event->get('start_date').' id: '.$event->get('id');
+            print_r($tmp);
+            if ( isset($this->eventCount[$date]) ) {
+                $this->eventCount[$date] += $event->get('K');
+            } else {
+                $this->eventCount[$date] = $event->get('K');
+            }
+        }
+        exit();
+    }
+    /**
      * get a list of events that will go thourgh the listDayHolderTpl and listEventTpl
      * @return string $html
      */
@@ -1052,23 +1292,235 @@ ORDER BY ce.start_date ASC
         return $listDayHolderTpl;
     }
     /**
-     * 
+     * Display a single week view
      */
     public function getWeek(){
+        // get events
+        $this->loadEvents();
+        // permission to add?
+        $link_view = NULL;
+        if ( $this->modx->user->isAuthenticated('mgr') ) {
+            $this->add_link = true;
+            $link_view = 'add';
+        } else if ( $this->filters['allowRequests'] ) {
+            $link_view = 'request';
+        }
         
+        # Make the table headers
+        $calColumnHeadTpl = '';
+        if( $this->show_day[7]){ 
+            // this is setting sunday first on the list
+            $calColumnHeadTpl .= $this->getChunk($this->filters['weekColumnHeadTpl'], array('weekDay' => $this->day_array[7]) );
+        }
+        for ($count = 1; $count < 7; $count++) {
+            if( $this->show_day[$count]){
+                $calColumnHeadTpl .= $this->getChunk($this->filters['weekColumnHeadTpl'], array('weekDay' => $this->day_array[$count]) );
+            }
+        }
+        $calColumnTpl = '';
+        ## the day columns
+        $time = strtotime($this->filters['year'].'-'.$this->filters['month'].'-'.$this->filters['day']);
+        for ($t = $time; $t < $time+7*3600*24; $t+=3600*24 ) {
+            // show_day is 1 to 7 
+            $weekDay = date('N', $t);
+            if( $this->show_day[$weekDay]){
+                //' CUR: '.(($count + $offset)%7).' - Count: '.$count.' - OFF: '.$offset.
+                $tmp_date = date('Y-m-d', $t);
+                $add_url = ( !empty($link_view) ? $this->url.'view='.$link_view.'&amp;start_date='.$tmp_date.'&amp;'.$this->params : '' );
+                $properties = array(
+                        'assets_url' => MODX_ASSETS_URL,
+                        'column_class' => '',
+                        'month' => $this->month_array[date('n',$t)],
+                        'year' => date('Y', $t),
+                        'day' => date('j', $t),
+                        'allow_add' => $this->add_link,
+                        'add_message' => $this->modx->lexicon('addMessage'),
+                        'add_url' => $add_url,
+                        'add_link' => ( $this->add_link ? '<a class="addEvent" href="'.$add_url.'" title="Add event to '.$tmp_date.'">[ + ]</a>' : '' ),
+                        'calDayHolderTpl' => $this->eventList($tmp_date, 'weekEventTpl', 'weekDayHolderTpl')
+                    );
+                $calColumnTpl .= $this->getChunk($this->filters['weekColumnTpl'], $properties);
+            } 
+        }
+        // only one row
+        $calRowTpl = $this->getChunk($this->filters['weekRowTpl'], array('calColumnTpl' => $calColumnTpl ));
+        
+        // now fill the table
+        $properties = array(
+                'calColumnHeadTpl' => $calColumnHeadTpl,
+                'calRowTpl' => $calRowTpl
+                );
+        $calTableTpl = $this->getChunk($this->filters['weekTableTpl'], $properties );
+        return $calTableTpl;
     }
     /**
-     * 
+     * Get a list of a sinble day's events
      */
     public function getDay(){
-        
+        // get events
+        $this->loadEvents();
+        $DayHolderTpl = NULL;
+        if( is_array($this->events) ){
+            foreach( $this->events as $date => $dayEvents) {
+                //echo '<br>Date: '. $date;
+                # go thourgh the events
+                $listEventTpl = '';
+                foreach($dayEvents as $id => $event ) {
+                    $listEventTpl .= $this->getChunk($this->filters['dayEventTpl'], $event);
+                }
+                if ( empty($listEventTpl) ) {
+                    continue;
+                }
+                list($y, $m, $d) = explode('-', $date);
+                $date = $y.'-'.( strlen($m)==1 ? '0'.$m : $m ).'-'.( strlen($d)==1 ? '0'.$d : $d );
+                $timestamp =  strtotime($date);
+                $properties = array(
+                        'date' => strftime($this->filters['dateFormat'], $timestamp),
+                        'timestamp' => $timestamp, 
+                        'month' => $m,
+                        'year' => $y,
+                        'day' => $d,
+                        'listEventTpl' => $listEventTpl
+                    );
+                $DayHolderTpl .= $this->getChunk($this->filters['dayHolderTpl'], $properties);
+            }
+        }
+        return $DayHolderTpl;
     }
     
     /**
-     * 
+     * @returns a Year calendar with all 12 mnths
      */
-    public function addEvent(){
-        
+    public function getYear(){
+        // count the events
+        $this->countEvents($this->filters['year'].'-01-01', $this->filters['year'].'-12-31');
+        $calTableTpl = '';
+        for ( $month=1; $month<=12; $month++ ) {
+            //print_r($this->events);
+            $month_days = date("t", mktime(0, 0, 0, $month, 1, $this->filters['year']));// days in the current month
+            $offset = date("N", mktime(0, 0, 0, $month, 1, $this->filters['year']));//
+            if( $offset == 7){
+                $offset = 0;
+            }
+            # get the pre filler start date
+            if( $month > 1){
+                $pre_month = $month - 1;
+                $pre_year = $this->filters['year'];
+            } else{
+                $pre_month = 12;
+                $pre_year = $this->filters['year'] - 1;
+            }
+            $pre_day = date("t", mktime(0, 0, 0, $pre_month, 1, $pre_year)) - $offset + 1;//day is the previous month
+            # get the pre filler start date
+            if( $month < 12 ){
+                $after_month = $month + 1;
+                $after_year = $this->filters['year'];
+            }else{
+                $after_month = 1;
+                $after_year = $this->filters['year'] + 1;
+            }
+            $after_len = 7 - ($month_days + $offset)%7;
+            if($after_len == 7){
+                $after_len = 0;
+            }
+            
+            # Make the table headers
+            $calColumnHeadTpl = '';
+            if( $this->show_day[7]){ 
+                // this is setting sunday first on the list
+                $calColumnHeadTpl .= $this->getChunk($this->filters['yearColumnHeadTpl'], array('weekDay' => $this->day_array[7]) );
+            }
+            for ($count = 1; $count < 7; $count++) {
+                if( $this->show_day[$count]){
+                    $calColumnHeadTpl .= $this->getChunk($this->filters['yearColumnHeadTpl'], array('weekDay' => $this->day_array[$count]) );
+                }
+            }
+            $calColumnTpl = '';
+            ## pre filler columns
+            for ($count = 0; $count < $offset; $count++) {
+                $tmp = $count;
+                if( $tmp == 0){
+                    $tmp = 7;
+                }
+                if( $this->show_day[$tmp]) {
+                    $properties = array(
+                            'assets_url' => MODX_ASSETS_URL,
+                            'column_class' => 'grey',
+                            'month' => $this->month_array[$pre_month],
+                            'year' => $pre_year,
+                            'day' => $pre_day,
+                        );
+                    $calColumnTpl .= $this->getChunk($this->filters['yearColumnTpl'], $properties);
+                }
+                $pre_day++;
+            }
+            $calRowTpl = '';
+            ## the day columns
+            for ($count = 1; $count <= $month_days; $count++) {
+                $cur_day = ($count + $offset)%7;//0 to 6 - 0 is saturday, sunday, mon, tue, wed, thr, fri
+                if( $cur_day == 1) {// Sunday = 1  - start new row
+                    
+                    $calRowTpl .= $this->getChunk($this->filters['yearRowTpl'], array('calColumnTpl' => $calColumnTpl ));
+                    // reset the cal column for the new row(week)
+                    $calColumnTpl = '';
+                }
+                # reassign to day array
+                if ($cur_day == 0) {
+                    $cur_day = 6;//Saturday
+                } else if ($cur_day == 1) {
+                    $cur_day = 7;//Sunday
+                } else {
+                    $cur_day -= 1;//Set to proper day
+                }
+                if( $this->show_day[$cur_day]){
+                    //' CUR: '.(($count + $offset)%7).' - Count: '.$count.' - OFF: '.$offset.
+                    $add_url = ( !empty($link_view) ? $this->url.'view='.$link_view.'&amp;start_date='.$this->filters['year'].'-'.$month.'-'.$count.'&amp;'.$this->params : '' );
+                    $properties = array(
+                            'assets_url' => MODX_ASSETS_URL,
+                            'column_class' => ( $this->eventCount[$this->filters['year'].'-'.$month.'-'.$count] > 0 ? 'hasEvents' : ''),// Y,N?,
+                            'month' => $this->month_array[$month],
+                            'year' => $this->filters['year'],
+                            'day' => $count,
+                            'day_url' => $this->url.'view=day&amp;date='.$this->filters['year'].'-'.$month.'-'.$count,
+                            'allow_add' => $this->add_link,
+                            'add_message' => $this->modx->lexicon('addMessage'),
+                            'add_url' => $add_url,
+                            'hasEvents' => ( $this->eventCount[$this->filters['year'].'-'.$month.'-'.$count] > 0 ? true : false),// Y,N?
+                            'eventTotal' => $this->eventCount[$this->filters['year'].'-'.$month.'-'.$count]
+                        );
+                    $calColumnTpl .= $this->getChunk($this->filters['yearColumnTpl'], $properties);
+                }
+            }
+            if( $cur_day == 7 ){
+                $cur_day = 0;//set to 0 since the loop advances before use!
+            }
+            ## after filler columns
+            for ($count = 1; $count <= $after_len; $count++) {
+                $cur_day++;
+                if( $this->show_day[$cur_day]){ // keeping from above
+                    $tmp_date =  $after_year.'-'.$after_month.'-'.$count;//YYYY-MM-DD
+                    $add_url = ( !empty($link_view) ? $this->url.'view='.$link_view.'&amp;start_date='.$after_year.'-'.$after_month.'-'.$count.'&amp;'.$this->params : '' );
+                    $properties = array(
+                            'assets_url' => MODX_ASSETS_URL,
+                            'column_class' => 'grey',
+                            'month' => $after_month,
+                            'year' => $after_year,
+                            'day' => $count
+                        );
+                    $calColumnTpl .= $this->getChunk($this->filters['yearColumnTpl'], $properties);
+                }
+            }
+            // the last row
+            $calRowTpl .= $this->getChunk($this->filters['yearRowTpl'], array('calColumnTpl' => $calColumnTpl ));
+            
+            // now fill the table
+            $properties = array(
+                    'calColumnHeadTpl' => $calColumnHeadTpl,
+                    'calRowTpl' => $calRowTpl
+                    );
+            $calTableTpl .= $this->getChunk($this->filters['yearTableTpl'], $properties );
+        }
+        return $calTableTpl;
     }
     /**
      * 
@@ -1087,7 +1539,31 @@ ORDER BY ce.start_date ASC
      * 
      */
     public function getRss(){
+        // get events
+        $this->loadEvents();
+        $rssItemTpl = NULL;
+        if( is_array($this->events) ){
+            foreach( $this->events as $date => $dayEvents) {
+                //echo '<br>Date: '. $date;
+                list($y, $m, $d) = explode('-', $date);
+                $date = $y.'-'.( strlen($m)==1 ? '0'.$m : $m ).'-'.( strlen($d)==1 ? '0'.$d : $d );
+                $timestamp =  strtotime($date);
+                $properties = array(
+                        'date' => strftime($this->filters['dateFormat'], $timestamp),
+                        'timestamp' => $timestamp, 
+                        'month' => $m,
+                        'year' => $y,
+                        'day' => $d,
+                        'listEventTpl' => $listEventTpl
+                    );
+                # go thourgh the events
+                foreach($dayEvents as $id => $event ) {
+                    $rssItemTpl .=  $this->getChunk($this->filters['rssItemTpl'], $event);
+                }
+            }
+        }
         
+        return $this->getChunk($this->filters['rssTpl'], array('rssItems'=> $rssItemTpl) );
     }
     /**
      * 
@@ -1159,6 +1635,8 @@ ORDER BY ce.start_date ASC
             //$v->setComponent( $vevent );
         }
         $v->returnCalendar(); // redirect calendar file to browser
+        // now kill modx
+        
     }
     /**
      * This will process the event details to make it ready to send to HTML
@@ -1477,8 +1955,8 @@ ORDER BY ce.start_date ASC
             'churchevents.descDate_heading','churchevents.descNextDate_heading','churchevents.descDescription_heading',
             'churchevents.descContact_heading','churchevents.descLocation_heading','churchevents.descSetupNotes_heading',
             'churchevents.descOfficeNotes_heading','churchevents.descSetupTime_heading',
-            
-            'churchevents.previous','churchevents.next',
+            // filters
+            'churchevents.previous','churchevents.next','churchevents.filterLocations_label',
             // Days
             'churchevents.sunday','churchevents.monday','churchevents.tuesday','churchevents.wednesday','churchevents.thursday',
             'churchevents.friday','churchevents.saturday',
