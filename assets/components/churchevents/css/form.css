@@ -1,0 +1,215 @@
+div.rightDiv{
+	width: 240px;
+	padding-left: 20px;
+	float:right;
+}
+div.leftDiv{
+	width: 700px;
+	float:left;
+}
+div#church_events_wrapper{
+	width: 780px;
+	margin:10px auto;
+}
+#content form .formError,
+form .formError{
+	color: #ff0000;
+}
+/* basic forms: */
+form select.month,
+form.standard select.month{
+	width: 120px;
+}
+form.standard input.day,
+form.standard li input.day{
+	width: 20px;
+	float:none;
+	text-align:right;
+}
+form.standard select.hour, 
+form.standard select.minute{
+	width:43px;
+}
+form.standard input.year,
+form.standard ul li input.year{
+	width:40px;
+	float:none;
+	text-align:right;
+}
+form.standard input.am, 
+form.standard input.pm,
+form.standard ul li input.am,
+form.standard ul li input.pm{
+	width:auto;
+	float:none;
+}
+form.standard input.date,
+form.standard ul li input.date{
+	width: 80px;
+	float:none;
+	text-align:right;
+}
+form.standard fieldset{
+	border:#a2a2a2 solid 1px;
+	padding:15px 20px 5px 20px;
+	margin-bottom: 15px;
+	width:auto;
+}
+form.standard fieldset fieldset{
+	margin:5px;
+	width:auto;
+}
+form.standard legend{
+	color:#003366;
+	font-weight:bold;
+	font-size: .8em;
+	padding: 2px;
+}
+form.standard optgroup{
+	color: #0000ff;
+}
+form.standard optgroup option{
+	margin-left: 20px;
+}
+form.standard option{
+	color: #000;
+	padding: 1px;
+	border-bottom: 1px dashed #d4d4d4;
+	width:auto;
+}
+form.standard option:hover{
+	border-bottom: 1px solid #ff0000;
+}
+form.standard{
+	font-size:.9em;
+}
+body form.stardard ul{
+	padding:0;
+	margin: 5px 0;
+}
+form.standard ul.narrowList {
+	width: 245px;
+}
+form.standard .textCenter{
+	text-align:center;
+}
+body form.stardard li p{
+	padding:2px 0;
+}
+form.standard input,
+form.standard select{
+	width: 233px; 
+	background:#F7F6F6;
+	border: 1px solid #e4e4e4;
+	border-bottom:1px solid #a2a2a2;
+	color:#555;
+	padding:1px;
+}
+form.standard textarea{
+	width: 99%;
+	height: 60px;
+	background:#F7F6F6;
+	border: 1px solid #e4e4e4;
+	border-bottom:1px solid #a2a2a2;
+	color:#555;
+	padding:2px 5px;
+	margin: 0 auto;
+}
+form.standard input:focus, 
+form.standard select:focus, 
+form.standard textarea:focus {
+	background: #ffffcc;
+}
+form.standard input:hover, 
+form.standard input:focus,
+form.standard textarea:hover, 
+form.standard textarea:focus{
+	border:1px solid #D0DDFE;
+	background:#ffe;
+	color:#000;
+}
+form.standard input.radio, 
+div form.standard ul li input.radio,
+form.standard ul li ul li input.radio,
+form.standard ul li.full input.radio,
+form.standard li tr td input.radio{
+	width:auto;
+	display:inline;
+	border:none;
+	background:none;
+}
+form.standard input.date, 
+div form.standard ul li input.date{
+	width:100px;
+}
+form.standard ul, 
+form.standard li{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+form.standard li{
+	margin:6px 0 5px 0;
+}
+form.standard li,
+form.standard li ul li{
+	width: 237px;
+/*	height: 60px;*/
+	float:left;
+	padding:0;
+}
+form.standard li.full{
+	width: 735px;
+}
+form.standard input.full{
+	width: 730px;
+}
+form.standard li.medium{
+	width: 487px;
+}
+form.standard li.medium input{
+	width: 483px;
+}
+form.standard li.small{
+	width: 115px;
+}
+form.standard li.small input{
+	width: 111px;
+}
+form.standard li.autoWidth {
+	width:auto;
+}
+form.standard li img#daysOfMonthPos,
+form.standard li img.calendar_image{
+	float:right;
+	margin-left:10px;
+}
+form.standard li.spaceRight{
+	margin-right: 10px;
+}
+form.standard li.spaceLeft{
+	margin-left: 10px;
+}
+.clear{
+	clear:both;
+}
+.displayBlock{
+	display:block;
+}
+form.standard ul.nested_radio li{
+	width: auto;
+	margin-left: 25px;
+}
+table.tGrid{
+	border-collapse:collapse;
+}
+table.tGrid th{
+	padding: 2px;
+}
+table.tGrid td{
+	padding: 3px;
+	border: 1px solid #a2a2a2;
+}
+table.tGrid tr:hover{
+	background:#00CCFF;
+}
