@@ -53,7 +53,7 @@ table.dayList td {
     min-width: 50px;
 }
 table.dayList .timeColumn {
-    width: 70px;
+    width: 100px;
 }
 table.calendarYear td{
     min-width: 45px;

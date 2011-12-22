@@ -386,7 +386,7 @@ class Calendar {
         if ( isset($_REQUEST['view']) && in_array($_REQUEST['view'], array('day', 'week', 'month', 'year') )) {
             $saveView = true;
         }
-        $this->filters['view'] = $this->modx->getOption('view', $scriptProperties, $this->getUserValue('view', NULL, false, $saveView));
+        $this->filters['view'] = $this->modx->getOption('view', $scriptProperties, $this->getUserValue('view', 'month', false, $saveView));
         /*if ( !in_array($view,$allow_veiws) ){
             $view = '';
         }*/
@@ -1533,7 +1533,7 @@ ORDER BY ce.start_date ASC
                             'month' => $this->month_array[$month],
                             'year' => $this->filters['year'],
                             'day' => $count,
-                            'day_url' => $this->url.'view=day&amp;date='.$this->filters['year'].'-'.$month.'-'.$count,
+                            'day_url' => $this->url.'view=day&amp;month='.$month.'&amp;day='.$count.'&amp;year='.$this->filters['year'],
                             'allow_add' => $this->add_link,
                             'add_message' => $this->modx->lexicon('addMessage'),
                             'add_url' => $add_url,

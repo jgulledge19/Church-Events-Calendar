@@ -1,5 +1,14 @@
 Changelog for ChurchEvents.
 
+ChurchEvents 1.0 pl 
+===============
+- fixed minor URL error in Year view
+- minor CSS change for the day view
+
+ChurchEvents 1.0 rc2 
+===============
+- minor error set a default view.
+
 ChurchEvents 1.0 rc1 
 ===============
 - fixed day view SQL error
