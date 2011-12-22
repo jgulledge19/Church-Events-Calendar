@@ -127,12 +127,12 @@ class eventHooks extends fiHooks{
         // calendar_select
         if ( empty($this->Calendar->calendar_array) ) {
             $cals = $this->modx->getCollection('ChurchCalendar');
-            echo 'MAKE array';
+            //echo 'MAKE array';
             foreach ( $cals as $chCalendar ) {
                 $this->Calendar->calendar_array[$chCalendar->get('id')] = $chCalendar->get('title');
             }
         }
-        print_r($this->Calendar->calendar_array);
+        //print_r($this->Calendar->calendar_array);
         if ( empty($this->Calendar->category_array) ) {
             $cats = $this->modx->getCollection('ChurchEcategory');
             foreach ( $cats as $chCat ) {
@@ -452,7 +452,7 @@ class eventHooks extends fiHooks{
                 // now save event to get ID if new event
                 if ( !$event->save() ){
                     echo 'DID NOT SAVE: '.$this->modx->errorCode();
-                    echo mysql_error();
+                    //echo mysql_error();
                     return false;
                 }
                 // now save events

@@ -1411,6 +1411,7 @@ ORDER BY ce.start_date ASC
         // get events
         $this->loadEvents();
         $DayHolderTpl = NULL;
+        $properties = array();
         if( is_array($this->events) ){
             foreach( $this->events as $date => $dayEvents) {
                 //echo '<br>Date: '. $date;
@@ -1434,9 +1435,9 @@ ORDER BY ce.start_date ASC
                         'day' => $d,
                         'listEventTpl' => $listEventTpl
                     );
-                $DayHolderTpl .= $this->getChunk($this->filters['dayHolderTpl'], $properties);
             }
         }
+        $DayHolderTpl = $this->getChunk($this->filters['dayHolderTpl'], $properties);
         return $DayHolderTpl;
     }
     
