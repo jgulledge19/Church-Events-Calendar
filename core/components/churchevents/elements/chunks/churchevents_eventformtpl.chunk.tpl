@@ -384,10 +384,10 @@
                                         <select name="setup_time_min" title="Select the minute" class="hour" id="min_3" > 
                                             [[!+fi.setup_minute_select]]
                                         </select> 
-                                        <input name="setup_time_am" type="radio" [[!+fi.setup_am:FormItIsChecked=`am`]] value="am" class="am" id="am_3"  /> 
+                                        <input name="setup_time_am" type="radio" [[!+fi.setup_time_am:FormItIsChecked=`am`]] value="am" class="am" id="am_3"  /> 
                                         <label for="am_3">am</label> 
                                         
-                                        <input name="setup_time_am" type="radio" [[!+fi.setup_am:FormItIsChecked=`pm`]] value="pm" class="pm" id="pm_3"  /> 
+                                        <input name="setup_time_am" type="radio" [[!+fi.setup_time_am:FormItIsChecked=`pm`]] value="pm" class="pm" id="pm_3"  /> 
                                         <label for="pm_3">pm</label> 
                                 </li>
                             </ul>

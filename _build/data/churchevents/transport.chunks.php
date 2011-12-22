@@ -90,16 +90,7 @@ $chunks[7]->fromArray(array(
     'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_calrowtpl.chunk.tpl'),
     'properties' => '',
 ),'',true,true);
-            
-$chunks[8]= $modx->newObject('modChunk');
-$chunks[8]->fromArray(array(
-    'id' => 8,
-    'name' => 'ChurchEvents_CalSearchTpl',
-    'description' => 'Calendar search',
-    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_calsearchtpl.chunk.tpl'),
-    'properties' => '',
-),'',true,true);
-            
+
 $chunks[9]= $modx->newObject('modChunk');
 $chunks[9]->fromArray(array(
     'id' => 9,
@@ -315,6 +306,69 @@ $chunks[32]->fromArray(array(
     'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/emailrequestnoticetpl.chunk.tpl'),
     'properties' => '',
 ),'',true,true);
+/* Added in 1.0 Beta3 */
+$x= 32;
+$chunks[++$x]= $modx->newObject('modChunk');
+$chunks[$x]->fromArray(array(
+    'id' => $x,
+    'name' => 'EventsRssItemTpl',
+    'description' => 'Event RSS Item',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/eventsrssitemtpl.chunk.tpl'),
+    'properties' => '',
+),'',true,true);
+$chunks[++$x]= $modx->newObject('modChunk');
+$chunks[$x]->fromArray(array(
+    'id' => $x,
+    'name' => 'EventsRssTpl',
+    'description' => 'The RSS template',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/eventsrsstpl.chunk.tpl'),
+    'properties' => '',
+),'',true,true);
+// ChurchEvents_DayHolderTpl and ChurchEvents_DayEventTpl Chunks
+$chunks[++$x]= $modx->newObject('modChunk');
+$chunks[$x]->fromArray(array(
+    'id' => $x,
+    'name' => 'ChurchEvents_DayHolderTpl',
+    'description' => 'Calendar day holder for the day view',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_dayholdertpl.chunk.tpl'),
+    'properties' => '',
+),'',true,true);
+            
+$chunks[++$x]= $modx->newObject('modChunk');
+$chunks[$x]->fromArray(array(
+    'id' => $x,
+    'name' => 'ChurchEvents_DayEventTpl',
+    'description' => 'Calendar Event for day view',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_dayeventtpl.chunk.tpl'),
+    'properties' => '',
+),'',true,true);
 
+
+$chunks[++$x]= $modx->newObject('modChunk');
+$chunks[$x]->fromArray(array(
+    'id' => $x,
+    'name' => 'ChurchEvents_YearTableTpl',
+    'description' => 'Calendar table for the year view',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_yeartabletpl.chunk.tpl'),
+    'properties' => '',
+),'',true,true);
+$chunks[++$x]= $modx->newObject('modChunk');
+$chunks[$x]->fromArray(array(
+    'id' => $x,
+    'name' => 'ChurchEvents_YearColumnTpl',
+    'description' => 'Calendar column for the year view',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_yearcolumntpl.chunk.tpl'),
+    'properties' => '',
+),'',true,true);
+// churchevents_locationdescriptiontpl.chunk.tpl
+$chunks[++$x]= $modx->newObject('modChunk');
+$chunks[$x]->fromArray(array(
+    'id' => $x,
+    'name' => 'ChurchEvents_LocationDescriptionTpl',
+    'description' => 'Displays info about one location for the location view',
+    'snippet' => file_get_contents($sources['source_core'].'/elements/chunks/churchevents_locationdescriptiontpl.chunk.tpl'),
+    'properties' => '',
+),'',true,true);
+            
 
 return $chunks;

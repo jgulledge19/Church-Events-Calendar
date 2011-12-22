@@ -18,6 +18,13 @@ body{
 	height: 120px;
 	width:990px;
 }
+a{
+    text-decoration:none;
+    color: #555;
+}
+a:hover {
+    text-decoration: underline;
+}
 h1{
 	margin: 0 20px;
 	font-variant:small-caps;
@@ -42,6 +49,8 @@ li{
 	width:950px;
 	color:#fff;
 	padding:10px 20px;
+	margin-top: 30px;
+	clear:both;
 }
 #footer ul{
 	margin-left: 25px;

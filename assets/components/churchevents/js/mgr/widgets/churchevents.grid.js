@@ -774,7 +774,30 @@ function getLocationWindowObject(config, type) {
                         ,maxLength: 32
                         ,width: 300
                         ,anchor: '100%'
-                    },{
+                    }
+                ]
+            },{
+                /*
+                title: _('churchevents.location_basic_info')
+                ,layout: 'form'
+                ,cls: 'modx-panel'
+                ,bodyStyle: { background: 'transparent', padding: '10px' }
+                ,autoHeight: true
+                ,labelWidth: 130
+                ,items: [*/
+                id: 'modx-'+this.ident+'-settings2'
+                ,title: _('churchevents.location_contact_info')
+                ,layout: 'form'
+                ,cls: 'modx-panel'
+                ,autoHeight: true
+                ,forceLayout: true
+                ,labelWidth: 130
+                ,defaults: {autoHeight: true ,border: false}
+                ,style: 'background: transparent;'
+                ,bodyStyle: { background: 'transparent', padding: '10px' }
+                ,items: //MODx.getQRSettings(this.ident,config.record)
+                [
+                    {
                         xtype: 'textfield'
                         ,fieldLabel: _('churchevents.location_phone')
                         ,name: 'phone'

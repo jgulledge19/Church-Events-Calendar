@@ -11,6 +11,10 @@ class myController {
      * @var boolean $_initialized
      */
     private $_initialized = false;
+    /**
+     * 
+     */
+    private $chunkToPhp = NULL;
     
     /**
      * @param $modx
@@ -63,6 +67,19 @@ class myController {
                 $language = isset($this->config['language']) ? $this->config['language'] . ':' : '';
                 $this->modx->lexicon->load($language.$this->config['packageName'].':default');
                 
+                // load customModChunk package
+                //$this->modx->addPackage('customModChunk', $this->config['modelPath']);
+                if ($this->modx->loadClass('chunktophp',$this->config['modelPath'].$this->config['packageName'].'/',true,true)) {
+                    $clearCache = false;
+                    if ( isset($_REQUEST['clearCache']) ) {
+                        $clearCache = true;
+                    }
+                    $this->chunkToPhp = new chunkToPhp($this->modx, $clearCache);//,$this->config);
+                    //echo 'Load Class';
+                } else {
+                    $this->modx->log(modX::LOG_LEVEL_ERROR,'['.$this->config['packageName'].'] Could not load chunkToPhp class.');
+                }
+                
                 $this->_initialized = true;
                 break;
         }
@@ -74,6 +91,7 @@ class myController {
      * @return boolean
      */
     public function isInitialized() {
+        
         return $this->_initialized;
     }
     /**
@@ -119,10 +137,17 @@ class myController {
         } else {
             $o = $this->chunks[$name];
             $chunk = $this->modx->newObject('modChunk');
+            
             $chunk->setContent($o);
         }
         $chunk->setCacheable(false);
+        // process as PHP - test Year view without: 2.31s and with: 880-900ms
+        $output = $this->chunkToPhp->getPhpChunk($name, $properties, $chunk->getContent() );
+        //$chunk->getContent(array('content' => $output));// does not work
+        //$chunk->set('content', $output);
+        $chunk->_content = $output;// have to force the content string to be set adoes nothing was the _content has been set
         return $chunk->process($properties);
+        //return $output;
     }
 
     /**

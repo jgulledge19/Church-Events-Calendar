@@ -54,9 +54,9 @@ class eventHooks extends fiHooks{
             $this->default_data['church_calendar_id'] = $_POST['calendar_id'];
             $this->default_data['church_ecategory_id'] = $_POST['category_id'];
             
-            $this->default_data['public_time'] = ( $_POST['public_time_am']=='am' ? $_POST['public_time_hr'] : $_POST['public_time_hr']*1 + 12).':'.$_POST['public_time_min'];
+            $this->default_data['public_time'] = ( $_POST['public_time_am']=='pm' ? $_POST['public_time_hr']*1 + 12 : $_POST['public_time_hr'] ).':'.$_POST['public_time_min'];
             $this->default_data['duration'] = $_POST['duration_hr'].':'.$_POST['duration_min'].':00';
-            $this->default_data['setup_time'] = ( $_POST['setup_time_am']=='am' ? $_POST['setup_time_hr'] : ($_POST['setup_time_hr']*1 + 12)).':'.$_POST['setup_time_min'];
+            $this->default_data['setup_time'] = ( $_POST['setup_time_am']=='pm' ? ($_POST['setup_time_hr']*1 + 12) : $_POST['setup_time_hr'] ).':'.$_POST['setup_time_min'];
             if ( isset($_POST['formLoc']) && is_array($_POST['formLoc']) ){
                 $eventLocations = $_POST['formLoc'];
             }
@@ -127,18 +127,20 @@ class eventHooks extends fiHooks{
         // calendar_select
         if ( empty($this->Calendar->calendar_array) ) {
             $cals = $this->modx->getCollection('ChurchCalendar');
+            echo 'MAKE array';
             foreach ( $cals as $chCalendar ) {
-                $this->Calendar->calendar_array[$chCalendar->get('title')] = $chCalendar->get('id');
+                $this->Calendar->calendar_array[$chCalendar->get('id')] = $chCalendar->get('title');
             }
         }
+        print_r($this->Calendar->calendar_array);
         if ( empty($this->Calendar->category_array) ) {
             $cats = $this->modx->getCollection('ChurchEcategory');
             foreach ( $cats as $chCat ) {
-                $this->Calendar->category_array[$chCat->get('name')] = $chCat->get('id');
+                $this->Calendar->category_array[$chCat->get('id')] = $chCat->get('name');
             }
         }
-        $this->default_data['calendar_select'] = $this->Calendar->selectOptions($this->Calendar->calendar_array, $this->default_data['church_calendar_id'], NULL);
-        $this->default_data['category_select'] = $this->Calendar->selectOptions($this->Calendar->category_array, $this->default_data['church_ecategory_id'], NULL);
+        $this->default_data['calendar_select'] = $this->Calendar->selectOptions(array_flip($this->Calendar->calendar_array), $this->default_data['church_calendar_id'], NULL);
+        $this->default_data['category_select'] = $this->Calendar->selectOptions(array_flip($this->Calendar->category_array), $this->default_data['church_ecategory_id'], NULL);
         $this->default_data['calendar_id'] = $this->default_data['church_calendar_id'];
         $this->default_data['category_id'] = $this->default_data['church_ecategory_id'];
                 
@@ -263,13 +265,15 @@ class eventHooks extends fiHooks{
             $this->fields['duration'] = $this->fields['duration_hr'].':'.$this->fields['duration_min'].':00';
             $dur_seconds = 3600*$this->fields['duration_hr'] + 60*$this->fields['duration_min'];
         } 
-        if ( !isset($this->fields['setup_time']) ) {
+        //echo '<br>Setup: '.$this->fields['setup_time_hr'];
+        if ( !isset($this->fields['setup_time']) && !empty($this->fields['setup_time_hr']) ) {
             $this->fields['setup_time'] = ( $_POST['setup_time_am']=='am' ? $this->fields['setup_time_hr'] : ($this->fields['setup_time_hr']*1 + 12)).':'.$this->fields['setup_time_min'].':00';
+            //echo '<br>Setup--:'.$this->fields['setup_time'];
         }
         if ( isset($this->fields['formLoc']) && is_array($this->fields['formLoc']) ){
             $eventLocations = $this->fields['formLoc'];
         }
-    
+    //return false;
         // get the input data:
         $input_data = $this->fields;
         // fix times:
@@ -277,7 +281,7 @@ class eventHooks extends fiHooks{
             $input_data['public_time'] = '00:00:00';
             $public_seconds = 0;
         }
-        if ( $input_data['setup_time'] == ':0:00' || $input_data['event_timed'] != 'Y' ) {
+        if ( !isset($input_data['setup_time']) || (isset($input_data['setup_time']) && $input_data['setup_time'] == ':0:00' ) || $input_data['event_timed'] != 'Y' ) {
             $input_data['setup_time'] = '00:00:00';
         }
         if ( $input_data['event_timed'] != 'Y' ) {
@@ -286,7 +290,8 @@ class eventHooks extends fiHooks{
         $start_seconds = strtotime($input_data['public_start']);
         $start_date = date('Y-m-d', $start_seconds);
         $input_data['public_start'] .= ' '.$input_data['public_time'];
-        if ( $input_data['setup_time'] != '00:00:00' ) {// setup_time
+        
+        if ( isset($input_data['setup_time']) && $input_data['setup_time'] != '00:00:00' ) {// setup_time
             $input_data['start_date'] = $start_date.' '.$input_data['setup_time'];
         } else {
             $input_data['start_date'] = $input_data['public_start'];
@@ -297,7 +302,7 @@ class eventHooks extends fiHooks{
             $input_data['public_end'] = date('Y-m-d', strtotime($input_data['public_end']));
         }
         // end date needs to also have the end time so public_start + duration
-        $input_data['end_date'] = date('Y-m-d h:i:s', $start_seconds + $public_seconds + $dur_seconds);
+        $input_data['end_date'] = date('Y-m-d H:i:s', $start_seconds + $public_seconds + $dur_seconds);
         
         if ( !empty($event_id) && is_object($event) ) {
             $input_data['verson'] = $default_data['version'] + 1;
@@ -404,12 +409,13 @@ class eventHooks extends fiHooks{
                         continue;
                     }
                     $input_data['public_start'] = $date.' '.$input_data['public_time'];
-                    if ( $input_data['setup_time'] != '00:00:00'  ) {// setup_time
+                    if ( isset($input_data['setup_time']) && $input_data['setup_time'] != '00:00:00'  ) {// setup_time
+                        //echo '<br>Setup Time: '.$input_data['setup_time'];
                         $input_data['start_date'] = $date.' '.$input_data['setup_time'];
                     } else {
                         $input_data['start_date'] = $input_data['public_start'];
                     }
-                    $input_data['end_date'] = date('Y-m-d h:i:s', strtotime($date) + $public_seconds + $dur_seconds);
+                    $input_data['end_date'] = date('Y-m-d H:i:s', strtotime($date) + $public_seconds + $dur_seconds);
                     $count++;
                     if ( $count == 1 ) {
                         // set the first date the a repeated date if they picked an invalid date: (the parent)

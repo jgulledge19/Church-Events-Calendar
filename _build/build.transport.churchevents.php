@@ -52,7 +52,7 @@
 define('PKG_NAME','ChurchEvents');
 define('PKG_NAME_LOWER','churchevents');
 define('PKG_VERSION','1.0.0');
-define('PKG_RELEASE','beta3');
+define('PKG_RELEASE','rc1');
 define('PKG_CATEGORY','ChurchEvents');
 
 /* Set package options - you can turn these on one-by-one

@@ -1,10 +1,17 @@
 Changelog for ChurchEvents.
 
+ChurchEvents 1.0 rc1 
+===============
+- fixed day view SQL error
+- change the day view chunks (DayHolderTpl & DayEventTpl) and added CSS to the assets/components/churchevents/css/calendar.css file
+- added churchevents_locationdescriptiontpl.chunk.tpl for a locaitons view
+
 
 ChurchEvents 1.0 beta3 
 ===============
 - added iCal export 
-- added RSS with ChurchEventsRSS snippet with EventsRssTpl and EventsRssItemTpl chunk
+- added RSS with ChurchEventsRSS snippet with EventsRssTpl and EventsRssItemTpl chunk 
+    and rssPageID System Setting
 - added System Setting: rssPageID with supporting lexicon items
 - added location filter for ChurchEventsCalednar snippet with 2 more Chunks: 
     ChurchEvents_CalFilterLocationTpl and ChurchEvents_CalFilterLocationTypeTpl
@@ -12,7 +19,9 @@ ChurchEvents 1.0 beta3
 - removed ChurchEvents_CalSearchTpl Chunk - this was not used.
 - added a week view - new properties options: weekColumnHeadTpl, weekColumnTpl, weekRowTpl, weekTableTpl, weekEventTpl, weekDayHolderTpl
 - added a day view and ChurchEvents_DayHolderTpl and ChurchEvents_DayEventTpl Chunks
-- added a year view - 
+- added a year view - ChurchEvents_YearTableTpl and ChurchEvents_YearColumnTpl Chunks
+- fixed minor error on calulating time and repeating events
+- added custom chunk caching class to improve preformance 
 
 ChurchEvents 1.0 beta2 
 ===============

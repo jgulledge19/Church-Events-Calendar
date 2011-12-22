@@ -1,8 +1,8 @@
 --------------------
 Snippet: ChurchEvents
 --------------------
-Version: 1.0 beta2
-Rewritten: December 8, 2011
+Version: 1.0 rc1
+Rewritten: December 22, 2011
 Author: Joshua Gulledge <jgulledge19@hotmail.com>
 License: GNU GPLv2 (or later at your option)
 
@@ -23,18 +23,19 @@ Features:
     - Repeating events, daily, weekly, monthly and about any combination of those and you can select exceptions.
     - Allow events to be requested and can edit/delete a single instance of an event
     - Private/Public events
-    - Grid & List views
+    - Day/week/month/year views and list view with the 
     - Manage locations
     - If you use the locations option events will check for conflict on entry/update.
-    - Several more before a 1.0 pl
+    - RSS
+    - iCal export
     
+Documentation: http://rtfm.modx.com/display/ADDON/Church+Events+Calendar
+
 Developers Info:
     1.0 Alpha4 and newer use jQuery older versions used the mootools JavaScript Library: http://mootools.net and 
     the mootools date picker: http://mootools.net/forge/p/mootools_datepicker.  See old documentation at: 
-    http://www.joshua19media.com/modx-development/church-events-docs.html much if it is still relevant, I 
+    http://www.joshua19media.com/modx-development/church-events-docs.html much of it is still relevant, I 
     will be updating docs before a release canidate.  
-
-More Docs: http://rtfm.modx.com/display/ADDON/Church+Events+Calendar
 
 How to Install:
 1. Install via the MODX Revolution package managment, FormIt and ColorPicker packages are required before install.
@@ -44,66 +45,6 @@ How to Install:
 3. Go to System -> System Settings
     A. Where you see core in a drop down select churchevents
     B. Now you will see some options, you will need to put in a value for Page/Resource ID
-
-ONLY For alphas:
-2. Manualy install the CMP:
-    See http://rtfm.modx.com/display/revolution20/Custom+Manager+Pages+Tutorial for more help
-    a. Create Namespace:  System->Namespace
-        Click Create New and then fill exactly for Name: churchevents 
-        and for Path: {core_path}components/events/
-    b. Create the Action
-        System->Actions
-        Right-click churchevents from the list of namespaces and select "Create Action Here".
-        Controller: controllers/index
-        Namespace: yes, use the same namespace: churchevents
-        Check Load Headers
-        Language Topics: churchevents:default
-        Now click save
-    c. Create the Menu Object
-        Right-Click "Components" and choose "Place Action Here"
-        Lexicon Key: churchevnts
-        Description: churchevents.desc
-        Action: churchevents - controllers/index
-        Save (you can ignore the Icon, Parameters, Handler, and Permissions fields for now)
-3. Refresh your browser and you should see Church Events under the Components menu.
-4. Add in System Settings:
-    See System Settings for more info: http://rtfm.modx.com/display/revolution20/System+Settings
-      A. Key: churchevents.allowRequests
-         Name: Allow Requests
-         Field Type: Yes/No
-         Namespace: churchevents
-         Area Lexicon: ChurchEvents
-         Value: Yes
-         Description: Allow guests to request events.
-      B. Key: churchevents.dateFormat
-         Name: Date Format
-         Field Type: Textfield
-         Namespace: churchevents
-         Area Lexicon: ChurchEvents
-         Value: %m/%d/%Y
-         Description: This is the format that will appear on forms and when a date is presented. Default is %m/%d/%Y see php.net/strftime for all options.
-      C. Key: churchevents.extended
-         Name: Extended Fields
-         Field Type: Textarea
-         Namespace: churchevents
-         Area Lexicon: ChurchEvents
-         Value: 
-         Description: A comma separated list of fields you want on the event form.  Example: extend_numberOfPeople,extend_needCatering.
-      D. Key: churchevents.pageID
-         Name: Page/Resource ID
-         Field Type: Textfield
-         Namespace: churchevents
-         Area Lexicon: ChurchEvents
-         Value: 
-         Description: This is the Page/Resource ID where the calendar will be located.  This is what all generated URLs are based on. 
-      E. Key: churchevents.useLocations
-         Name: Use Locations
-         Field Type: Yes/No
-         Namespace: churchevents
-         Area Lexicon: ChurchEvents
-         Value: Yes
-         Description: Use the location manager.  If yes events will choose from a list of locations and events can check for conflicts.  If no then each event can have a typed in a location and no event is checked for conflict.
-5. Then run the install snippet: [[installChurchEvents]]
 
 Extending - adding more fields to the add/edit event form
 1. Simply add another field on the form and the name has to start with extend_.  So an example is you want to 

@@ -42,6 +42,7 @@
             [[+locationInfo]]
         </div>`]]
         
+        [[~[[id]]? clear=`Y`]]
         
     </fieldset>
 <!-- must have this for search to work for pages with out furl -->
