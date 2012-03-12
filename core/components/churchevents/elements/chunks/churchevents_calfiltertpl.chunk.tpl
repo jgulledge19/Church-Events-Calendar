@@ -51,6 +51,7 @@
 </form>
 
 <ul id="view_tabs">
+    <li class=""><a href="[[~[[*id]]? &view=`day` &month=`[[+cMonth]]` &day=`[[+cDay]]` &year=`[[+cYear]]` ]]">Today</a></li>
     <li class="[[+view:isequalto=`day`:then=`selected`:else:``]]"><a href="[[~[[*id]]? &view=`day`]]">Day</a></li>
     <li class="[[+view:isequalto=`week`:then=`selected`:else:``]]"><a href="[[~[[*id]]? &view=`week`]]">Week</a></li>
     <li class="[[+view:isequalto=`month`:then=`selected`:else:``]]"><a href="[[~[[*id]]? &view=`month`]]">Month</a></li>
