@@ -145,7 +145,8 @@ class Calendar {
      * @return boolean 
      */
     public function isAdmin(){
-        if ( $this->modx->user->isAuthenticated('mgr') ) {
+        // log in via the manager or any other context (web)
+        if ( $this->modx->user->isAuthenticated('mgr') || $this->modx->user->isAuthenticated($this->modx->context->get('key')) ) {
             return true;
         }
         return false;
@@ -730,7 +731,7 @@ class Calendar {
         }
         // permission to add?
         $link_view = NULL;
-        if ( $this->modx->user->isAuthenticated('mgr') ) {
+        if ( $this->isAdmin() ) { // $this->modx->user->isAuthenticated('mgr') ) {
             $this->add_link = true;
             $link_view = 'add';
         } else if ( $this->filters['allowRequests'] ) {
@@ -985,7 +986,7 @@ ORDER BY ce.start_date ASC
         if ( !empty($this->filters['filterSearch']) ) {
             $query->andCondition(array( 'title:LIKE' => '%'.$this->filters['filterSearch'].'%' ) );
         }
-        if ( !$this->modx->user->isAuthenticated('mgr') ) {
+        if (!$this->isAdmin() ) { // !$this->modx->user->isAuthenticated('mgr') ) {
             //echo '<br>test status <br>';
             $query->andCondition(array( 'status' => 'approved' ) );
         }
@@ -1267,7 +1268,7 @@ ORDER BY ce.start_date ASC
         if ( !empty($this->filters['filterSearch']) ) {
             $query->andCondition(array( 'title:LIKE' => '%'.$this->filters['filterSearch'].'%' ) );
         }
-        if ( !$this->modx->user->isAuthenticated('mgr') ) {
+        if ( !$this->isAdmin() ) { // !$this->modx->user->isAuthenticated('mgr') ) {
             //echo '<br>test status <br>';
             $query->andCondition(array( 'status' => 'approved' ) );
         }
@@ -1349,7 +1350,7 @@ ORDER BY ce.start_date ASC
         $this->loadEvents();
         // permission to add?
         $link_view = NULL;
-        if ( $this->modx->user->isAuthenticated('mgr') ) {
+        if ( $this->isAdmin() ) { // $this->modx->user->isAuthenticated('mgr') ) {
             $this->add_link = true;
             $link_view = 'add';
         } else if ( $this->filters['allowRequests'] ) {
