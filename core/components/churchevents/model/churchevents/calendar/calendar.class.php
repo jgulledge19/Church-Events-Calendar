@@ -300,6 +300,7 @@ class Calendar {
                             'month' => $this->month_array[$this->filters['month']],
                             'year' => $this->filters['year'],
                             'conflictMessage' => $this->modx->lexicon('churchevents.conflictMessage'),
+                            'datepickerFormat' => $this->dateformatToJS($this->filters['dateFormat'])
                         );
                     $html .= $this->getChunk($this->filters['eventFormHeadTpl'], $properties);
                     // show form
@@ -2180,6 +2181,29 @@ ORDER BY ce.start_date ASC
         if ($input == $option) {
             $output = ' checked="checked"';
         }
+        return $output;
+    }
+    /**
+     * Utility function, will return the JavaScript dateformat from a php date format (case senstive)
+     * @param (String) $php_format ( %m/%d/%Y)
+     * @return string $output
+     */
+    public function dateformatToJS($php_format){
+        $output = ' ';
+        $php = array(
+            // days
+            '%e', '%d','%a','%A',// ns - %j, %u, %w
+            '%m','%m','%b','%B',
+            '%y', '%Y',
+            '%D', '%s');
+        $js = array(
+            // days
+            'd', 'dd', 'D', 'DD',
+            'mm', 'mm', 'M', 'MM',
+            'y', 'yy',
+            'mm/dd/y', '@'
+            );// http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
+        $output = str_replace($php,$js, $php_format);
         return $output;
     }
 } 

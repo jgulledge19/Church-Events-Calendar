@@ -55,7 +55,7 @@
         // Datepicker
         $('#txt_public_start').datepicker({
             inline: true
-            // ,dateFormat: 'yy-mm-dd'
+            ,dateFormat: '[[+datepickerFormat]]' // 'yy-mm-dd' - http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
             ,onSelect: function(dateText, inst) { 
                 //setter
                 $( "#txt_public_end" ).datepicker( "option", "minDate", new Date(dateText) );
@@ -64,12 +64,13 @@
         });
         $('#txt_public_end').datepicker({
             inline: true
+            ,dateFormat: '[[+datepickerFormat]]'
             ,onSelect: function(dateText, inst) { 
                 //setter
                 $( "#txt_exceptions" ).datepicker( "option", "maxDate", new Date(dateText)  );
             }
         });
-        $('#txt_exceptions').multiDatesPicker({showButtonPanel: true});
+        $('#txt_exceptions').multiDatesPicker({showButtonPanel: true, dateFormat: '[[+datepickerFormat]]'});
         
         $( "#txt_public_end" ).datepicker( "option", "minDate", new Date($('#txt_public_start').val()) );
         $( "#txt_exceptions" ).datepicker( "option", "minDate", new Date($('#txt_public_start').val()) );
