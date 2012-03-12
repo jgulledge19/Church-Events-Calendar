@@ -1,5 +1,11 @@
 Changelog for ChurchEvents.
 
+
+ChurchEvents 1.0.1 pl 
+===============
+- updated template, just put the <base> before the <link>
+
+
 ChurchEvents 1.0 pl 
 ===============
 - fixed minor URL error in Year view

@@ -584,7 +584,7 @@ class eventHooks extends fiHooks{
         } else{
             $this->modx->toPlaceholder('returnMessage', '<h3 class="error">Error adding data line: '.__LINE__.' in file: '.__FILE__.'</h3>'.
             $this->modx->errorCode(), $this->config['placeholderPrefix'],'');
-            
+            // echo 'DID NOT SAVE: '.$this->modx->errorCode();
             //$modx->getErrors();
             //print_r($modx->errorInfo());
             //print_r($input_data);

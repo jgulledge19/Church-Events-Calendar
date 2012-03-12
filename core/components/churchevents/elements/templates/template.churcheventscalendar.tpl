@@ -3,9 +3,9 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>My Church Events</title>
-  <link rel="stylesheet" href="assets/components/churchevents/css/layout.css" />
-
     <base href="[[!++site_url]]" />
+    <link rel="stylesheet" href="assets/components/churchevents/css/layout.css" />
+    
 </head>
 <body>
   <div id="wrapper">
@@ -22,8 +22,8 @@
       <h2>Footer Stuff</h2>
       <ul>
         <li><a href="http://modx.com">This site runs on MODX</a></li>
-        <li><a href="http://rtfm.modx.com/display/ADDON/Church+Events+Calendar">Read the docs for church events calendar</a></li>
-        <li><a href="http://www.joshua19media.com/modx-development/church-events-docs.html">More docs</a></li>
+        <li><a href="http://rtfm.modx.com/display/ADDON/Church+Events+Calendar">Read the docs for Church Events Calendar</a></li>
+        <li><a href="http://www.joshua19media.com/modx-development/church-events-docs.html">Old docs</a></li>
       </ul>
 
     </div>
