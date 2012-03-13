@@ -473,6 +473,9 @@ class Calendar {
         
         $this->filters['categoryHeadTpl'] = $this->modx->getOption('categoryHeadTpl', $scriptProperties, $skin.'_categoryHeadTpl');
         $this->filters['calFilterTpl'] = $this->modx->getOption('calFilterTpl', $scriptProperties, $skin.'_calFilterTpl');
+        if ( $this->isAdmin() ) {
+            $this->filters['calFilterTpl'] = $this->modx->getOption('calAdminFilterTpl', $scriptProperties, $this->filters['calFilterTpl']);
+        }
         // filterLocationTpl
         $this->filters['calFilterLocationTypeTpl'] = $this->modx->getOption('calFilterLocationTypeTpl', $scriptProperties, $skin.'_CalFilterLocationTypeTpl');
         $this->filters['calFilterLocationTpl'] = $this->modx->getOption('calFilterLocationTpl', $scriptProperties, $skin.'_CalFilterLocationTpl');
