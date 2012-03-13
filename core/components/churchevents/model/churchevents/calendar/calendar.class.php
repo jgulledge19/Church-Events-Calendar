@@ -521,10 +521,11 @@ class Calendar {
      * @param string $key
      * @param mixed $default the default value
      * @param boolean $is_numeric=false
-     * @param boolean $save=false
+     * @param boolean $saveSession=false
+     * @param boolean $saveCookie=false
      * @return mixed $value
      */
-    public function getUserValue($key, $default, $is_numeric=false, $save=false) {
+    public function getUserValue($key, $default, $is_numeric=false, $saveSession=false, $saveCookie=false) {
         $value = $default;
         if ( isset($_REQUEST[$key]) && !$is_numeric || ( isset($_REQUEST[$key]) && is_numeric($_REQUEST[$key]) ) ){
             $value = $_REQUEST[$key];
@@ -535,8 +536,11 @@ class Calendar {
         } else if ( isset($_COOKIE[$key]) && !$is_numeric || ( isset($_COOKIE[$key]) && is_numeric($_COOKIE[$key]) ) ){
             $value = $_COOKIE[$key];
         } 
-        if ( $save ) {
-            $_COOKIE[$key] = $_SESSION[$key] = $value;
+        if ( $saveSession ) {
+            $_SESSION[$key] = $value;
+        } 
+        if ( $saveCookie ) {
+            $_COOKIE[$key] = $value;
         }
         return $value;
     }
@@ -545,10 +549,11 @@ class Calendar {
      * @param string $key
      * @param array $default the default value
      * @param boolean $is_numeric=false
-     * @param boolean $save=false
+     * @param boolean $saveSession=false
+     * @param boolean $saveCookie=false
      * @return array $values
      */
-    public function getUserValues($key, $default, $is_numeric=false, $save=false) {
+    public function getUserValues($key, $default, $is_numeric=false, $saveSession=false, $saveCookie=false) {
         $values = $default;
         if ( isset($_REQUEST[$key]) ) {
             $values = $_REQUEST[$key];
@@ -566,8 +571,11 @@ class Calendar {
             }
             $values = $tmp;
         }
-        if ( $save ) {
-            $_COOKIE[$key] = $_SESSION[$key] = $values;
+        if ( $saveSession ) {
+            $_SESSION[$key] = $values;
+        } 
+        if ( $saveCookie ) {
+            $_COOKIE[$key] = $values;
         }
         return $values;
     }
