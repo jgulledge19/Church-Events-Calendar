@@ -414,8 +414,8 @@ class Calendar {
             $this->filters['week'] = $this->getUserValue('week', date("W"), true, true);
             $this->filters['year'] = $this->getUserValue('year', date("Y"), true, true);
             
-            $this->filters['church_calendar_id'] = $this->getUserValue('church_calendar_id', 0, true, true);
-            $this->filters['church_ecategory_id'] = $this->getUserValue('church_ecategory_id', 0, true, true);
+            $this->filters['church_calendar_id'] = $this->getUserValue('church_calendar_id', $this->modx->getOption('calendarID', $scriptProperties, 0), true, true);
+            $this->filters['church_ecategory_id'] = $this->getUserValue('church_ecategory_id', $this->modx->getOption('categoryID', $scriptProperties, 0), true, true);
         }
         // set church_calendar_id in session
         
@@ -540,7 +540,8 @@ class Calendar {
             $_SESSION[$key] = $value;
         } 
         if ( $saveCookie ) {
-            $_COOKIE[$key] = $value;
+            setcookie($key, $value, 30*3600*24/*, '/'*/);
+            //$_COOKIE[$key] = $value;
         }
         return $value;
     }
@@ -575,7 +576,8 @@ class Calendar {
             $_SESSION[$key] = $values;
         } 
         if ( $saveCookie ) {
-            $_COOKIE[$key] = $values;
+            setcookie($key, $values, 30*3600*24/*, '/'*/);
+            //$_COOKIE[$key] = $values;
         }
         return $values;
     }
