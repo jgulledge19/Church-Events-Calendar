@@ -408,6 +408,12 @@ class Calendar {
             
             $this->filters['church_calendar_id'] = $this->modx->getOption('calendarID', $scriptProperties, 0);
             $this->filters['church_ecategory_id'] = $this->modx->getOption('categoryID', $scriptProperties, 0);
+            
+            $this->filters['filterSearch'] = $this->modx->getOption('filterSearch', $scriptProperties, NULL, false, true);
+            $this->filters['filterLocations'] = $this->modx->getOption('filterLocations', $scriptProperties, 0, true, true);
+            $this->filters['locations'] = $this->modx->getOption('loc', $scriptProperties,array(), true, true);
+            $this->filters['location'] = $this->modx->getOption('location', $scriptProperties, 0, true, false);
+            
         } else {
             $this->filters['month'] = $this->getUserValue('month', date("n"), true, true);
             $this->filters['day'] = $this->getUserValue('day', date("j"), true, true);
@@ -416,6 +422,15 @@ class Calendar {
             
             $this->filters['church_calendar_id'] = $this->getUserValue('church_calendar_id', $this->modx->getOption('calendarID', $scriptProperties, 0), true, true);
             $this->filters['church_ecategory_id'] = $this->getUserValue('church_ecategory_id', $this->modx->getOption('categoryID', $scriptProperties, 0), true, true);
+            
+            $this->filters['filterSearch'] = $this->getUserValue('filterSearch', NULL, false, true);
+            $this->filters['filterLocations'] = $this->getUserValue('filterLocations', 0, true, true);
+            if ( !$this->filters['filterLocations'] ) {
+                $_REQUEST['loc'] = array();
+            }
+            $this->filters['locations'] = $this->getUserValues('loc', array(), true, true);
+            $this->filters['location'] = $this->getUserValue('location', 0, true, false);
+            
         }
         // set church_calendar_id in session
         
@@ -423,17 +438,12 @@ class Calendar {
         $this->filters['dateFormat'] = $this->modx->getOption('churchevents.dateFormat',array(),'%m/%d/%Y');//'m/d/Y');
         $this->filters['am'] = $this->modx->getOption('am',array(),'a');
         $this->filters['pm'] = $this->modx->getOption('pm',array(),'p');
+        
+        // form filters:
         $this->filters['useLocations'] = $this->modx->getOption('churchevents.useLocations',array(), true);
         $this->filters['allowRequests'] = $this->modx->getOption('churchevents.allowRequests',array(), false);
         $this->filters['prominent'] = $this->modx->getOption('prominent', $scriptProperties, NULL);
         // locations - this is from the filter gui
-        $this->filters['filterSearch'] = $this->getUserValue('filterSearch', NULL, false, true);
-        $this->filters['filterLocations'] = $this->getUserValue('filterLocations', 0, true, true);
-        if ( !$this->filters['filterLocations'] ) {
-            $_REQUEST['loc'] = array();
-        }
-        $this->filters['locations'] = $this->getUserValues('loc', array(), true, true);
-        $this->filters['location'] = $this->getUserValue('location', 0, true, false);
         
         // for the add/edit form
         $this->filters['formLocations'] = $this->getUserValues('formLoc', array(), true);
