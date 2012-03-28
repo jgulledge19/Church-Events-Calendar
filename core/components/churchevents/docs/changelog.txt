@@ -1,9 +1,16 @@
 Changelog for ChurchEvents.
 
 
-ChurchEvents 1.0.1 pl 
+ChurchEvents 1.1 pl 
 ===============
-- updated template, just put the <base> before the <link>
+   - fixes #8 Filters from $_REQUEST are not applied to the ChurchEventsList
+   - added #4 You can now set default Calendar and Category and added an Admin filter Chunk option - calAdminFilterTpl
+   - partial fix #11 Removed saving vars as cookies, now only in sessions
+   - added #12 Today button
+   - fixes #5 Date format now works for Javascript
+   - fixes #13 Allow login via current context
+   - fixes #10 Removed bad code in _calFilterTpl
+   - updated template, just put the <base> before the <link>
 
 
 ChurchEvents 1.0 pl 

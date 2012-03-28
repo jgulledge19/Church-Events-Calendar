@@ -54,9 +54,11 @@ class eventHooks extends fiHooks{
             $this->default_data['church_calendar_id'] = $_POST['calendar_id'];
             $this->default_data['church_ecategory_id'] = $_POST['category_id'];
             
-            $this->default_data['public_time'] = ( $_POST['public_time_am']=='pm' ? $_POST['public_time_hr']*1 + 12 : $_POST['public_time_hr'] ).':'.$_POST['public_time_min'];
+            $this->default_data['public_time'] = $this->Calendar->formatTimeInput($_POST['public_time_hr'], $_POST['public_time_min'], $_POST['public_time_am']);
+            //( ($_POST['public_time_am']=='pm' && $_POST['public_time_hr'] != 12) ? $_POST['public_time_hr']*1 + 12 : ($_POST['public_time_hr'] ==12 ? 0 : $_POST['public_time_hr']) ).':'.$_POST['public_time_min'];
             $this->default_data['duration'] = $_POST['duration_hr'].':'.$_POST['duration_min'].':00';
-            $this->default_data['setup_time'] = ( $_POST['setup_time_am']=='pm' ? ($_POST['setup_time_hr']*1 + 12) : $_POST['setup_time_hr'] ).':'.$_POST['setup_time_min'];
+            $this->default_data['setup_time'] = $this->Calendar->formatTimeInput($_POST['setup_time_hr'], $_POST['setup_time_min'], $_POST['setup_time_am']);
+            // ( ($_POST['setup_time_am']=='pm' && $_POST['setup_time_hr'] != 12) ? ($_POST['setup_time_hr']*1 + 12) : ($_POST['setup_time_hr'] ==12 ? 0 : $_POST['setup_time_hr']) ).':'.$_POST['setup_time_min'];
             if ( isset($_POST['formLoc']) && is_array($_POST['formLoc']) ){
                 $eventLocations = $_POST['formLoc'];
             }
@@ -258,8 +260,10 @@ class eventHooks extends fiHooks{
         $this->fields['church_calendar_id'] = $_POST['calendar_id'];
         $this->fields['church_ecategory_id'] = $_POST['category_id'];
         if ( !isset($this->fields['public_time']) ) {
-            $this->fields['public_time'] = ( $this->fields['public_time_am']=='am' ? $this->fields['public_time_hr'] : $this->fields['public_time_hr']*1 + 12).':'.$this->fields['public_time_min'].':00';
-            $public_seconds = 3600*( $this->fields['public_time_am']=='am' ? $this->fields['public_time_hr'] : $this->fields['public_time_hr']*1 + 12) + 60*$this->fields['public_time_min']; 
+            //$this->fields['public_time'] = ( ($this->fields['public_time_am']=='am' ||$this->fields['public_time_am']=='pm' && $this->fields['public_time_hr'] == 12) ? $this->fields['public_time_hr'] : $this->fields['public_time_hr']*1 + 12).':'.$this->fields['public_time_min'].':00';
+            $this->fields['public_time'] = $this->Calendar->formatTimeInput($this->fields['public_time_hr'], $this->fields['public_time_min'], $this->fields['public_time_am']);
+            $public_seconds = $this->Calendar->formatTimeInput($this->fields['public_time_hr'], $this->fields['public_time_min'], $this->fields['public_time_am'], 'timestamp');
+            //3600*( ($this->fields['public_time_am']=='am' ||$this->fields['public_time_am']=='pm' && $this->fields['public_time_hr'] == 12 ) ? $this->fields['public_time_hr'] : $this->fields['public_time_hr']*1 + 12) + 60*$this->fields['public_time_min']; 
         }
         if ( !isset($this->fields['duration']) ) {
             $this->fields['duration'] = $this->fields['duration_hr'].':'.$this->fields['duration_min'].':00';
@@ -267,7 +271,8 @@ class eventHooks extends fiHooks{
         } 
         //echo '<br>Setup: '.$this->fields['setup_time_hr'];
         if ( !isset($this->fields['setup_time']) && !empty($this->fields['setup_time_hr']) ) {
-            $this->fields['setup_time'] = ( $_POST['setup_time_am']=='am' ? $this->fields['setup_time_hr'] : ($this->fields['setup_time_hr']*1 + 12)).':'.$this->fields['setup_time_min'].':00';
+            $this->fields['setup_time'] = $this->Calendar->formatTimeInput($this->fields['setup_time_hr'], $this->fields['setup_time_min'], $this->fields['setup_time_am']); 
+            //( ($_POST['setup_time_am']=='am' || $_POST['setup_time_am']=='pm' && $this->fields['setup_time_hr'] ==12 ) ? $this->fields['setup_time_hr'] : ($this->fields['setup_time_hr']*1 + 12)).':'.$this->fields['setup_time_min'].':00';
             //echo '<br>Setup--:'.$this->fields['setup_time'];
         }
         if ( isset($this->fields['formLoc']) && is_array($this->fields['formLoc']) ){

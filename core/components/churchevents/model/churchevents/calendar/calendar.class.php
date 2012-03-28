@@ -2197,6 +2197,40 @@ ORDER BY ce.start_date ASC
         return $time_array;
     }
     /**
+     * Utility function this will return the time in a MySQL format or Unix from hr, minutes, am/pm
+     * @param (Int) $hour
+     * @param (Int) $minute
+     * @param (Int) $ampm
+     * @param (String) $format = MySQL, UNIX
+     * @return (mixed) $result - date(hh:mm:ss) or timestamp
+     * 
+     */
+    public function formatTimeInput($hour, $minute, $ampm, $format='MySQL') {
+        $result = '';
+        $tmpHr = 0;
+        // am
+        if ( $ampm=='am'  ) {
+            // || $ampm=='pm' && $hour == 12
+            $tmpHr = $hour;
+            if ( $hour == 12 ) {
+                // 0
+                $tmpHr = 0;
+            }
+        } else {
+            $tmpHr = $hour + 12;
+            if ( $hour == 12 ) {
+                // 0
+                $tmpHr = 12;
+            }
+        }
+        if ( $format == 'MySQL' ) {
+            $result = $tmpHr.':'.$minute.':00';
+        } else {
+            $result = 3600*$tmpHr + 60*$minute;
+        }
+        return $result;
+    }
+    /**
      * Utility function, will return a checked="checked" for radio and checkboxes
      * @param mixed $input
      * @param mixed $value
