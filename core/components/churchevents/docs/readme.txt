@@ -1,8 +1,8 @@
 --------------------
 Snippet: ChurchEvents
 --------------------
-Version: 1.1 pl
-Release Date: March 13, 2012
+Version: 1.1.1 pl
+Release Date: March 28, 2012
 Rewritten: December 23, 2011
 Author: Joshua Gulledge <jgulledge19@hotmail.com>
 License: GNU GPLv2 (or later at your option)

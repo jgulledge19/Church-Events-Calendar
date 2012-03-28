@@ -1,6 +1,10 @@
 Changelog for ChurchEvents.
 
 
+ChurchEvents 1.1.1 pl 
+===============
+   - fixes #14 Noon and Midnight issue
+
 ChurchEvents 1.1 pl 
 ===============
    - fixes #8 Filters from $_REQUEST are not applied to the ChurchEventsList
