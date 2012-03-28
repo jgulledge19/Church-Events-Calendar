@@ -1100,8 +1100,10 @@ ORDER BY ce.start_date ASC
             if($hr > 12){
                 $hr = $hr - 12;
             }
+        } else if ( $hr == 0 ) {
+            $hr = 12;
         }
-        if ( $min == '00' ) {
+        if ( $min == '00' ) { 
             $time = $hr.$am;
         } else {
             $time = $hr.':'.$min.$am;
@@ -2161,6 +2163,8 @@ ORDER BY ce.start_date ASC
                 if($hr > 12){
                     $hr = $hr - 12;
                 }
+            } else if($hr == 0 && $time_type == 12) {
+                $hr = 12;
             }
         } else {
             $hr = '-';//date("g");
