@@ -51,7 +51,7 @@
 /* Set package info be sure to set all of these */
 define('PKG_NAME','ChurchEvents');
 define('PKG_NAME_LOWER','churchevents');
-define('PKG_VERSION','1.0.0');
+define('PKG_VERSION','1.1.1');
 define('PKG_RELEASE','pl');
 define('PKG_CATEGORY','ChurchEvents');
 
