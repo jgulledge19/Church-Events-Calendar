@@ -714,7 +714,7 @@ class Calendar {
      */
     public function loadHead(){
         // this needs to go through a loop to get each category/calendar
-        $this->filters['cssTpl'];
+        //$this->filters['cssTpl'];
         $cats = $this->modx->getIterator('ChurchEcategory');
         $categoryHeadTpl = '';
         foreach ( $cats as $chCat ) {
@@ -838,14 +838,12 @@ class Calendar {
             # reassign to day array
             if($cur_day == 0){
                 $cur_day = 6;//Saturday
-            }
-            elseif($cur_day == 1){
+            } elseif($cur_day == 1) {
                 $cur_day = 7;//Sunday
-            }
-            else{
+            } else {
                 $cur_day -= 1;//Set to proper day
             }
-            if( $this->show_day[$cur_day]){
+            if( $this->show_day[$cur_day]) {
                 /*$str .= '
                 <td>
                     <div class="dayWrapper">
@@ -855,6 +853,7 @@ class Calendar {
                     </div>
                 </td>';*/
                 //' CUR: '.(($count + $offset)%7).' - Count: '.$count.' - OFF: '.$offset.
+                $tmp_date =  $this->filters['year'].'-'.$this->filters['month'].'-'.$count;//YYYY-MM-DD
                 $add_url = ( !empty($link_view) ? $this->url.'view='.$link_view.'&amp;start_date='.$this->filters['year'].'-'.$this->filters['month'].'-'.$count.'&amp;'.$this->params : '' );
                 $properties = array(
                         'assets_url' => MODX_ASSETS_URL,
@@ -1050,10 +1049,10 @@ ORDER BY ce.start_date ASC
             // fix date:
             list($y, $m, $d) = explode('-', $date);
             $date = $y.'-'.( strlen($m)==1 ? '0'.$m : $m ).'-'.( strlen($d)==1 ? '0'.$d : $d );
-            $day_array = $this->events[$date];
             //echo '<br>Day: '.$date.' -- '.$day_array;
             //print_r($this->events[$date]);
-            if( is_array($day_array) ){
+            if( isset($this->events[$date]) ){
+                $day_array = $this->events[$date];
                 # go thourgh the events
                 $calEventTpl = '';
                 foreach($day_array as $e_id => $array){
@@ -1126,6 +1125,8 @@ ORDER BY ce.start_date ASC
          */
         $timeDiff = 3600*24*7;// 1 week
         $endTime = 3600*24*6;// 6 days
+        $prev_url = $next_url = '';// init
+        $time = 0;
         switch( $this->filters['view'] ) {
             case 'day':
                 $timeDiff = 3600*24;// 1 day
@@ -1526,12 +1527,21 @@ ORDER BY ce.start_date ASC
                     $tmp = 7;
                 }
                 if( $this->show_day[$tmp]) {
+                    $add_url = ( !empty($link_view) ? $this->url.'view='.$link_view.'&amp;start_date='.$pre_year.'-'.$pre_month.'-'.$pre_day.'&amp;'.$this->params : '' );
                     $properties = array(
                             'assets_url' => MODX_ASSETS_URL,
                             'column_class' => 'grey',
                             'month' => $this->month_array[$pre_month],
                             'year' => $pre_year,
                             'day' => $pre_day,
+                            'day_url' => $this->url.'view=day&amp;month='.$pre_month.'&amp;day='.$pre_day.'&amp;year='.$pre_year,
+                            'allow_add' => $this->add_link,
+                            'add_message' => $this->modx->lexicon('addMessage'),
+                            'add_url' => $add_url,
+                            'hasEvents' => ( isset($this->eventCount[$pre_year.'-'.$pre_month.'-'.$pre_day]) ? true : false),// Y,N?
+                            'eventClass' => ( isset($this->eventCount[$pre_year.'-'.$pre_month.'-'.$pre_day]) ? 'hasEvents' : 'noEvents'),// Y,N?
+                            'eventTotal' => ( isset($this->eventCount[$pre_year.'-'.$pre_month.'-'.$pre_day]) ? $this->eventCount[$pre_year.'-'.$pre_month.'-'.$pre_day] : 0 )
+                            
                         );
                     $calColumnTpl .= $this->getChunk($this->filters['yearColumnTpl'], $properties);
                 }
@@ -1560,7 +1570,7 @@ ORDER BY ce.start_date ASC
                     $add_url = ( !empty($link_view) ? $this->url.'view='.$link_view.'&amp;start_date='.$this->filters['year'].'-'.$month.'-'.$count.'&amp;'.$this->params : '' );
                     $properties = array(
                             'assets_url' => MODX_ASSETS_URL,
-                            'column_class' => ( $this->eventCount[$this->filters['year'].'-'.$month.'-'.$count] > 0 ? 'hasEvents' : ''),// Y,N?,
+                            'column_class' => ( isset($this->eventCount[$this->filters['year'].'-'.$month.'-'.$count]) ? 'hasEvents' : ''),// Y,N?,
                             'month' => $this->month_array[$month],
                             'year' => $this->filters['year'],
                             'day' => $count,
@@ -1589,7 +1599,15 @@ ORDER BY ce.start_date ASC
                             'column_class' => 'grey',
                             'month' => $after_month,
                             'year' => $after_year,
-                            'day' => $count
+                            'day' => $count,
+                            'day_url' => $this->url.'view=day&amp;month='.$after_month.'&amp;day='.$count.'&amp;year='.$after_year,
+                            'allow_add' => $this->add_link,
+                            'add_message' => $this->modx->lexicon('addMessage'),
+                            'add_url' => $add_url,
+                            'hasEvents' => ( isset($this->eventCount[$after_year.'-'.$after_month.'-'.$count]) ? true : false),// Y,N?
+                            'eventClass' => ( isset($this->eventCount[$after_year.'-'.$after_month.'-'.$count]) ? 'hasEvents' : 'noEvents'),// Y,N?
+                            'eventTotal' => ( isset($this->eventCount[$after_year.'-'.$after_month.'-'.$count]) ? $this->eventCount[$after_year.'-'.$after_month.'-'.$count] : 0 )
+                            
                         );
                     $calColumnTpl .= $this->getChunk($this->filters['yearColumnTpl'], $properties);
                 }
@@ -1747,7 +1765,7 @@ ORDER BY ce.start_date ASC
         list($date) = explode(' ',$event->get('start_date'));
         $time_str = '';
         $end_time = $start_time = $setup_time = NULL;
-        $hr = $min = $dhr = $dmin;
+        $hr = $min = $dhr = $dmin = NULL;
         switch ( $event->get('event_timed')  ){
             case 'Y':
                 list($d, $time) = explode(' ',$event->get('public_start'));

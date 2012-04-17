@@ -37,7 +37,7 @@ class eventHooks extends fiHooks{
         if ( $this->formit->request->hasSubmission() ){
             
             if ( is_object($event) ) {
-                $this->default_data['event_id'] = $this->default_data['id'];
+                //$this->default_data['event_id'] = $this->default_data['id'];
                 // repeating event stuff:
                 $days = array();
                 switch($event->get('repeat_type')) {
@@ -54,10 +54,10 @@ class eventHooks extends fiHooks{
             $this->default_data['church_calendar_id'] = $_POST['calendar_id'];
             $this->default_data['church_ecategory_id'] = $_POST['category_id'];
             
-            $this->default_data['public_time'] = $this->Calendar->formatTimeInput($_POST['public_time_hr'], $_POST['public_time_min'], $_POST['public_time_am']);
+            $this->default_data['public_time'] = $this->Calendar->formatTimeInput($_POST['public_time_hr'], $_POST['public_time_min'], @$_POST['public_time_am']);
             //( ($_POST['public_time_am']=='pm' && $_POST['public_time_hr'] != 12) ? $_POST['public_time_hr']*1 + 12 : ($_POST['public_time_hr'] ==12 ? 0 : $_POST['public_time_hr']) ).':'.$_POST['public_time_min'];
             $this->default_data['duration'] = $_POST['duration_hr'].':'.$_POST['duration_min'].':00';
-            $this->default_data['setup_time'] = $this->Calendar->formatTimeInput($_POST['setup_time_hr'], $_POST['setup_time_min'], $_POST['setup_time_am']);
+            $this->default_data['setup_time'] = $this->Calendar->formatTimeInput($_POST['setup_time_hr'], $_POST['setup_time_min'], @$_POST['setup_time_am']);
             // ( ($_POST['setup_time_am']=='pm' && $_POST['setup_time_hr'] != 12) ? ($_POST['setup_time_hr']*1 + 12) : ($_POST['setup_time_hr'] ==12 ? 0 : $_POST['setup_time_hr']) ).':'.$_POST['setup_time_min'];
             if ( isset($_POST['formLoc']) && is_array($_POST['formLoc']) ){
                 $eventLocations = $_POST['formLoc'];

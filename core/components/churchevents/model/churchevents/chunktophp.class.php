@@ -20,7 +20,7 @@ class chunkToPhp {
      */
     public function __construct($modx, $clearCache=false) {
         $this->modx = &$modx;
-        $this->xpdo = $this->modx->xpdo;
+        // $this->xpdo = $this->modx->xpdo; - not working in 2.2.1
         $this->clearCache = $clearCache;
     }
     /**
