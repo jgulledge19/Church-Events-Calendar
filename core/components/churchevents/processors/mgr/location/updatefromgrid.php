@@ -16,6 +16,16 @@ if (empty($location)) return $modx->error->failure($modx->lexicon('churchevents.
 /* set fields */
 $location->fromArray($_DATA);
 
+if ( $_DATA['published'] || $_DATA['published'] == $modx->lexicon('yes') ) {
+    $location->set('published', 'Yes');
+} else {
+    $location->set('published', 'No');
+}
+if ( $_DATA['check_conflict'] || $_DATA['check_conflict'] == $modx->lexicon('yes') ) {
+    $location->set('check_conflict', 'Yes');
+} else {
+    $location->set('check_conflict', 'No');
+}
 /* save */
 if ($location->save() == false) {
     return $modx->error->failure($modx->lexicon('churchevents.location_err_save'));

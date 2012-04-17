@@ -23,6 +23,7 @@ class eventHooks extends fiHooks{
      */
     public function loadDefaults(){
         $event_id = $this->Calendar->getFilter('event_id');
+        $event = NULL;
         if ( empty($event_id) ) {
             // load default calendar and ecategory
             //return;
@@ -50,17 +51,17 @@ class eventHooks extends fiHooks{
             }
             // get the submitted values for created elements: selects and location checkboxes
             // status, calendar_id, category_id, 
-            $this->default_data['status'] = $_POST['status'];
-            $this->default_data['church_calendar_id'] = $_POST['calendar_id'];
-            $this->default_data['church_ecategory_id'] = $_POST['category_id'];
+            $this->default_data['status'] = $this->Calendar->POST('status');
+            $this->default_data['church_calendar_id'] = $this->Calendar->POST('calendar_id');
+            $this->default_data['church_ecategory_id'] = $this->Calendar->POST('category_id');
             
-            $this->default_data['public_time'] = $this->Calendar->formatTimeInput($_POST['public_time_hr'], $_POST['public_time_min'], @$_POST['public_time_am']);
+            $this->default_data['public_time'] = $this->Calendar->formatTimeInput($this->Calendar->POST('public_time_hr'), $this->Calendar->POST('public_time_min'), $this->Calendar->POST('public_time_am'));
             //( ($_POST['public_time_am']=='pm' && $_POST['public_time_hr'] != 12) ? $_POST['public_time_hr']*1 + 12 : ($_POST['public_time_hr'] ==12 ? 0 : $_POST['public_time_hr']) ).':'.$_POST['public_time_min'];
-            $this->default_data['duration'] = $_POST['duration_hr'].':'.$_POST['duration_min'].':00';
-            $this->default_data['setup_time'] = $this->Calendar->formatTimeInput($_POST['setup_time_hr'], $_POST['setup_time_min'], @$_POST['setup_time_am']);
+            $this->default_data['duration'] = $this->Calendar->POST('duration_hr').':'.$this->Calendar->POST('duration_min').':00';
+            $this->default_data['setup_time'] = $this->Calendar->formatTimeInput($this->Calendar->POST('setup_time_hr'), $this->Calendar->POST('setup_time_min'), $this->Calendar->POST('setup_time_am'));
             // ( ($_POST['setup_time_am']=='pm' && $_POST['setup_time_hr'] != 12) ? ($_POST['setup_time_hr']*1 + 12) : ($_POST['setup_time_hr'] ==12 ? 0 : $_POST['setup_time_hr']) ).':'.$_POST['setup_time_min'];
-            if ( isset($_POST['formLoc']) && is_array($_POST['formLoc']) ){
-                $eventLocations = $_POST['formLoc'];
+            if ( is_array($this->Calendar->POST('formLoc')) ){
+                $eventLocations = $this->Calendar->POST('formLoc');
             }
         } else if ( is_object($event) ) {
             $this->default_data = $event->toArray();
@@ -155,7 +156,7 @@ class eventHooks extends fiHooks{
         $this->default_data['public_am'] = $time['am'];
         
         // duration - should this be end time?
-        $time = $this->Calendar->makeTime($this->default_data['duration'], 24);
+        $time = $this->Calendar->makeTime((isset($this->default_data['duration']) ? $this->default_data['duration'] : 0 ), 24);
         $this->default_data['duration_hour_select'] = $time['hour_select'];
         $this->default_data['duration_minute_select'] = $time['minute_select'];
         $this->default_data['duration_hour'] = $time['hour'];
@@ -163,7 +164,7 @@ class eventHooks extends fiHooks{
         $this->default_data['duration_am'] = $time['am'];
         
         // set up times
-        $time = $this->Calendar->makeTime($this->default_data['setup_time']);
+        $time = $this->Calendar->makeTime((isset($this->default_data['setup_time']) ? $this->default_data['setup_time'] : 0 ));
         $this->default_data['setup_hour_select'] = $time['hour_select'];
         $this->default_data['setup_minute_select'] = $time['minute_select'];
         $this->default_data['setup_hour'] = $time['hour'];
@@ -224,7 +225,7 @@ class eventHooks extends fiHooks{
                 'Rejected' => 'rejected', 
                 'Deleted' => 'deleted'
                 );
-        $this->default_data['status_select'] = $this->Calendar->selectOptions($options, $this->default_data['status'], NULL);
+        $this->default_data['status_select'] = $this->Calendar->selectOptions($options, (isset($this->default_data['status']) ? $this->default_data['status'] : '' ), NULL);
         
         $this->default_data['view'] = $this->Calendar->getFilter('view');
         $this->Calendar->setFilter('showRepeatOptions', $show_repeat_options);
@@ -257,12 +258,12 @@ class eventHooks extends fiHooks{
         if ( !isset($this->fields['prominent'])){
             $this->fields['prominent'] = 'No';
         }
-        $this->fields['church_calendar_id'] = $_POST['calendar_id'];
-        $this->fields['church_ecategory_id'] = $_POST['category_id'];
+        $this->fields['church_calendar_id'] = $this->Calendar->POST('calendar_id');
+        $this->fields['church_ecategory_id'] = $this->Calendar->POST('category_id');
         if ( !isset($this->fields['public_time']) ) {
             //$this->fields['public_time'] = ( ($this->fields['public_time_am']=='am' ||$this->fields['public_time_am']=='pm' && $this->fields['public_time_hr'] == 12) ? $this->fields['public_time_hr'] : $this->fields['public_time_hr']*1 + 12).':'.$this->fields['public_time_min'].':00';
-            $this->fields['public_time'] = $this->Calendar->formatTimeInput($this->fields['public_time_hr'], $this->fields['public_time_min'], $this->fields['public_time_am']);
-            $public_seconds = $this->Calendar->formatTimeInput($this->fields['public_time_hr'], $this->fields['public_time_min'], $this->fields['public_time_am'], 'timestamp');
+            $this->fields['public_time'] = $this->Calendar->formatTimeInput($this->fields['public_time_hr'], $this->fields['public_time_min'], @$this->fields['public_time_am']);
+            $public_seconds = $this->Calendar->formatTimeInput($this->fields['public_time_hr'], $this->fields['public_time_min'], @$this->fields['public_time_am'], 'timestamp');
             //3600*( ($this->fields['public_time_am']=='am' ||$this->fields['public_time_am']=='pm' && $this->fields['public_time_hr'] == 12 ) ? $this->fields['public_time_hr'] : $this->fields['public_time_hr']*1 + 12) + 60*$this->fields['public_time_min']; 
         }
         if ( !isset($this->fields['duration']) ) {
@@ -271,7 +272,7 @@ class eventHooks extends fiHooks{
         } 
         //echo '<br>Setup: '.$this->fields['setup_time_hr'];
         if ( !isset($this->fields['setup_time']) && !empty($this->fields['setup_time_hr']) ) {
-            $this->fields['setup_time'] = $this->Calendar->formatTimeInput($this->fields['setup_time_hr'], $this->fields['setup_time_min'], $this->fields['setup_time_am']); 
+            $this->fields['setup_time'] = $this->Calendar->formatTimeInput($this->fields['setup_time_hr'], $this->fields['setup_time_min'], @$this->fields['setup_time_am']); 
             //( ($_POST['setup_time_am']=='am' || $_POST['setup_time_am']=='pm' && $this->fields['setup_time_hr'] ==12 ) ? $this->fields['setup_time_hr'] : ($this->fields['setup_time_hr']*1 + 12)).':'.$this->fields['setup_time_min'].':00';
             //echo '<br>Setup--:'.$this->fields['setup_time'];
         }
@@ -310,7 +311,7 @@ class eventHooks extends fiHooks{
         $input_data['end_date'] = date('Y-m-d H:i:s', $start_seconds + $public_seconds + $dur_seconds);
         
         if ( !empty($event_id) && is_object($event) ) {
-            $input_data['verson'] = $default_data['version'] + 1;
+            $input_data['verson'] = $event->get('version') + 1;
             //$input_data['id'] = $event_id;
         } else {
             $event = $this->modx->newObject('ChurchEvents');

@@ -1,5 +1,9 @@
 Changelog for ChurchEvents.
 
+ChurchEvents 1.1.2 pl 
+===============
+   - fixes #16 Yes/No in Manager
+   - fixes PHP Warning Notices
 
 ChurchEvents 1.1.1 pl 
 ===============

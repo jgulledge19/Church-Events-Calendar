@@ -43,6 +43,7 @@ foreach ($locationTypes as $locationType) {
     $array = $locationType->toArray();
     // make the date readable
     // $array['post_date'] = date('n/j/y g:ia',$feed_array['post_date']);
+    $array['public'] = ($array['public'] == 'Yes' ? 1 : 0 );
     $list[] = $array; 
 }
 return $this->outputArray($list,$count);

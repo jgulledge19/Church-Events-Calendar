@@ -594,7 +594,18 @@ class Calendar {
         }
         return $values;
     }
-    
+    /**
+     * Get the post value
+     * @param (String) $key
+     * @param (mixed) $default=NULL
+     * @return $_POST[$key] or $default
+     */
+    public function POST($key, $default=NULL) {
+        if ( isset($_POST[$key]) ) {
+            return $_POST[$key];
+        }
+        return $default;
+    }
     /**
      * get a filter
      * @param string $key
@@ -1142,6 +1153,7 @@ ORDER BY ce.start_date ASC
                 $next_url .= $this->url.'year='.($this->filters['year']+1).$params;
                 break;
             case 'month':
+            default:
                 # previous
                 if ( $this->filters['month'] > 1) {
                     $pre_month = $this->filters['month'] - 1;
@@ -1672,7 +1684,7 @@ ORDER BY ce.start_date ASC
                         'month' => $m,
                         'year' => $y,
                         'day' => $d,
-                        'listEventTpl' => $listEventTpl
+                        // 'listEventTpl' => $listEventTpl // is this needed?
                     );
                 # go thourgh the events
                 foreach($dayEvents as $id => $event ) {

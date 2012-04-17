@@ -44,6 +44,8 @@ foreach ($locations as $location) {
     $array = $location->toArray();
     // make the date readable
     // $array['post_date'] = date('n/j/y g:ia',$feed_array['post_date']);
+    $array['check_conflict'] = ($array['check_conflict'] == 'Yes' ? 1 : 0 );
+    $array['published'] = ($array['published'] == 'Yes' ? 1 : 0 );
     $list[] = $array; 
 }
 return $this->outputArray($list,$count);

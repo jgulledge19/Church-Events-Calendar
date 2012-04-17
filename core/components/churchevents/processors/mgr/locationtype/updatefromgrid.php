@@ -16,6 +16,12 @@ if (empty($locationType)) return $modx->error->failure($modx->lexicon('churcheve
 /* set fields */
 $locationType->fromArray($_DATA);
 
+if ( $_DATA['public'] || $_DATA['public'] == $modx->lexicon('yes') ) {
+    $locationType->set('public', 'Yes');
+} else {
+    $locationType->set('public', 'No');
+}
+
 /* save */
 if ($locationType->save() == false) {
     return $modx->error->failure($modx->lexicon('churchevents.location_type_err_save'));
